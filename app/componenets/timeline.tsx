@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { motion, useScroll, useSpring, useTransform, useMotionValue } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import localFont from "next/font/local";
+import React, { useRef } from "react";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { pricedown } from "@/lib/fonts";
 import {
   Zap,
   Hourglass,
@@ -13,486 +12,243 @@ import {
   Trophy,
 } from "lucide-react";
 
-/* ========================================================================
-   FONT & CONSTANTS
-   ======================================================================== */
-
-const Hacked_KerX = localFont({
-  src: "../../public/fonts/Hacked-KerX.ttf",
-  variable: "--custom-font",
-  fallback: ["monospace", "sans-serif"],
-});
-
-const BEVEL_RAISED =
-  "inset -1px -1px 0 rgba(0,0,0,0.35), inset 1px 1px 0 rgba(255,255,255,0.65)";
-const BEVEL_INSET =
-  "inset 1px 1px 0 rgba(0,0,0,0.1), inset -1px -1px 0 rgba(255,255,255,0.9)";
-
-/* ========================================================================
-   3D TILT CARD COMPONENT
-   ======================================================================== */
-
-const TiltCard = ({
-  children,
-  className = "",
-  dropShadowColor = "#ff2a85",
-}: {
-  children: React.ReactNode;
-  className?: string;
-  dropShadowColor?: string;
-}) => {
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
-
-  const rafRef = useRef<number | null>(null);
-  const rectRef = useRef<DOMRect | null>(null);
-
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const springConfig = { stiffness: 220, damping: 26, mass: 0.5 };
-  const mouseX = useSpring(x, springConfig);
-  const mouseY = useSpring(y, springConfig);
-
-  const rotateX = useTransform(mouseY, [-0.5, 0.5], ["5deg", "-5deg"]);
-  const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-5deg", "5deg"]);
-  const glareX = useTransform(mouseX, [-0.5, 0.5], ["10%", "90%"]);
-  const glareY = useTransform(mouseY, [-0.5, 0.5], ["10%", "90%"]);
-
-  const shadowX = useTransform(mouseX, [-0.5, 0.5], [14, -14]);
-  const shadowY = useTransform(mouseY, [-0.5, 0.5], [14, -14]);
-
-  const boxShadowValue = useTransform([shadowX, shadowY], (latest) => {
-    const [sx, sy] = latest as [number, number];
-    return `${sx}px ${sy}px 0px 0px ${dropShadowColor}, ${sx * 1.4}px ${sy * 1.4 + 10
-      }px 24px -4px rgba(0,0,0,0.45)`;
-  });
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const isTouch =
-        window.matchMedia("(pointer: coarse)").matches ||
-        "ontouchstart" in window ||
-        navigator.maxTouchPoints > 0;
-      setIsTouchDevice(isTouch);
-    }
-  }, []);
-
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isTouchDevice) return;
-    rectRef.current = e.currentTarget.getBoundingClientRect();
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isTouchDevice) return;
-    if (!rectRef.current) rectRef.current = e.currentTarget.getBoundingClientRect();
-    const rect = rectRef.current;
-    const clientX = e.clientX;
-    const clientY = e.clientY;
-
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => {
-      const rawX = (clientX - rect.left) / rect.width - 0.5;
-      const rawY = (clientY - rect.top) / rect.height - 0.5;
-      x.set(Math.min(0.5, Math.max(-0.5, rawX)));
-      y.set(Math.min(0.5, Math.max(-0.5, rawY)));
-    });
-  };
-
-  const handleMouseLeave = () => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rectRef.current = null;
-    x.set(0);
-    y.set(0);
-    setIsPressed(false);
-  };
-
-  return (
-    <div className="perspective-[1000px] w-full h-full">
-      <motion.div
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseDown={() => setIsPressed(true)}
-        onMouseUp={() => setIsPressed(false)}
-        style={{
-          rotateX: isTouchDevice ? 0 : rotateX,
-          rotateY: isTouchDevice ? 0 : rotateY,
-          transformPerspective: 1000,
-          transformStyle: "preserve-3d",
-          boxShadow: isTouchDevice
-            ? `6px 6px 0px 0px ${dropShadowColor}`
-            : boxShadowValue,
-        }}
-        animate={{ scale: isPressed ? 0.98 : 1 }}
-        transition={{ duration: 0.15, ease: "easeOut" }}
-        className={`group relative bg-[#eeeeee] border-2 border-[#1e1e2f] font-mono overflow-hidden select-none flex flex-col justify-between h-full will-change-transform ${className}`}
-      >
-        {!isTouchDevice && (
-          <motion.div
-            className="pointer-events-none absolute inset-0 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden"
-            style={{
-              background: useTransform([glareX, glareY], (latest) => {
-                const [gx, gy] = latest as [string, string];
-                return `radial-gradient(circle at ${gx} ${gy}, rgba(255,255,255,0.4), transparent 50%)`;
-              }),
-            }}
-          />
-        )}
-        {children}
-      </motion.div>
-    </div>
-  );
-};
-
-const WindowControls = ({ closeColor = "#ff2a85" }: { closeColor?: string }) => (
-  <div className="flex items-center gap-1 shrink-0">
-    <span
-      style={{ boxShadow: BEVEL_RAISED }}
-      className="w-4 h-4 bg-[#c9c9d4] text-[#1e1e2f] flex items-center justify-center text-[9px] font-bold"
-    >
-      _
-    </span>
-    <span
-      style={{ boxShadow: BEVEL_RAISED }}
-      className="w-4 h-4 bg-[#c9c9d4] text-[#1e1e2f] flex items-center justify-center text-[8px] font-bold"
-    >
-      □
-    </span>
-    <span
-      style={{
-        boxShadow: BEVEL_RAISED,
-        backgroundColor: closeColor,
-      }}
-      className="w-4 h-4 text-white flex items-center justify-center text-[9px] font-bold"
-    >
-      ×
-    </span>
-  </div>
-);
-
-/* ========================================================================
-   MAGICAL ORB & SPARKLE FOUNTAIN HEAD
-   ======================================================================== */
-
-const SparkleEmitter = () => {
-  const particles = useMemo(
-    () => [
-      { id: 1, x: -16, y: -18, scale: 0.9, duration: 1.1, delay: 0.0, color: "#00f0ff" },
-      { id: 2, x: 18, y: -20, scale: 1.1, duration: 1.3, delay: 0.2, color: "#ff2a85" },
-      { id: 3, x: -24, y: 8, scale: 0.7, duration: 1.0, delay: 0.4, color: "#ffffff" },
-      { id: 4, x: 22, y: 12, scale: 0.8, duration: 1.2, delay: 0.1, color: "#00f0ff" },
-      { id: 5, x: -10, y: -30, scale: 1.2, duration: 1.4, delay: 0.3, color: "#b967ff" },
-      { id: 6, x: 12, y: -28, scale: 0.6, duration: 0.9, delay: 0.5, color: "#ffd319" },
-      { id: 7, x: -20, y: -8, scale: 0.8, duration: 1.15, delay: 0.15, color: "#ff2a85" },
-      { id: 8, x: 16, y: -10, scale: 1.0, duration: 1.25, delay: 0.35, color: "#00f0ff" },
-    ],
-    []
-  );
-
-  return (
-    <div className="relative w-8 h-8 flex items-center justify-center pointer-events-none">
-      <motion.div
-        animate={{
-          scale: [1, 1.4, 1],
-          opacity: [0.5, 0.9, 0.5],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute w-12 h-12 rounded-full bg-gradient-to-r from-[#ff2a85] via-[#b967ff] to-[#00f0ff] blur-md"
-      />
-
-      <motion.div
-        animate={{
-          boxShadow: [
-            "0 0 12px #00f0ff, 0 0 24px #ff2a85",
-            "0 0 20px #ff2a85, 0 0 35px #00f0ff",
-            "0 0 12px #00f0ff, 0 0 24px #ff2a85",
-          ],
-        }}
-        transition={{
-          duration: 1.8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="relative z-10 w-4 h-4 rounded-full bg-white border-2 border-[#1e1e2f] flex items-center justify-center"
-      >
-        <div className="w-1.5 h-1.5 rounded-full bg-[#00f0ff] animate-pulse" />
-      </motion.div>
-
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-          animate={{
-            opacity: [0, 1, 1, 0],
-            scale: [0, p.scale, p.scale * 0.5, 0],
-            x: [0, p.x * 0.5, p.x],
-            y: [0, p.y * 0.5, p.y],
-          }}
-          transition={{
-            duration: p.duration,
-            repeat: Infinity,
-            delay: p.delay,
-            ease: "easeOut",
-          }}
-          style={{
-            backgroundColor: p.color,
-            boxShadow: `0 0 8px ${p.color}, 0 0 14px ${p.color}`,
-          }}
-          className="absolute w-2 h-2 rotate-45 pointer-events-none"
-        />
-      ))}
-    </div>
-  );
-};
-
-/* ========================================================================
-   TIMELINE SECTION
-   ======================================================================== */
-
 export default function TimelineSection() {
-  const [ref, inView] = useInView({
-    triggerOnce: false,
-    threshold: 0.1,
-  });
-
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start center", "end center"],
+    offset: ["start 70%", "end 70%"],
   });
 
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 18,
+    stiffness: 100,
+    damping: 20,
     restDelta: 0.001,
   });
 
   const timelineHeight = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
-  const cometTop = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
 
   const timelineEvents = [
     {
-      file: "PHASE_01.EXE",
+      phase: "PHASE 01",
       date: "01 SEP 2026",
-      title: "Registration Open",
-      description: "Ready, Set, Code!!",
+      title: "Registration Opens",
+      description: "Applications open nationwide. Ready, set, assemble your squad!",
       accentColor: "#00f0ff",
       icon: Zap,
     },
     {
-      file: "PHASE_02.EXE",
+      phase: "PHASE 02",
       date: "01 OCT 2026",
       title: "Registration Closes",
-      description: "Registration closes for all participants",
+      description: "Final deadline for all team submissions and ideas.",
       accentColor: "#ff2a85",
       icon: Hourglass,
     },
     {
-      file: "PHASE_03.EXE",
+      phase: "PHASE 03",
       date: "05 OCT 2026",
-      title: "Internal Screening Results",
-      description: "Internal screening results announcement",
+      title: "Screening Results",
+      description: "Announcement of shortlisted teams selected for the onsite hackathon.",
       accentColor: "#00f0ff",
       icon: Search,
     },
     {
-      file: "PHASE_04.EXE",
+      phase: "PHASE 04",
       date: "09 OCT 2026",
-      title: "Start of HACK 6.0 (Day 0)",
-      description: "Opening ceremony & event kickoff",
+      title: "Day 0 Kickoff",
+      description: "Arrival on campus, check-in, networking & Grand Opening Ceremony.",
       accentColor: "#ff2a85",
       icon: Rocket,
     },
     {
-      file: "PHASE_05.EXE",
+      phase: "PHASE 05",
       date: "10 OCT 2026",
-      title: "Day 1",
-      description: "Main hacking, building & workshops",
+      title: "Day 1 Hackathon",
+      description: "48-hour sprint begins: intense building, mentorship rounds & midnight snacks.",
       accentColor: "#00f0ff",
       icon: Code2,
     },
     {
-      file: "PHASE_06.EXE",
+      phase: "PHASE 06",
       date: "11 OCT 2026",
-      title: "Day 2",
-      description: "Final phase, project submission & judging",
+      title: "Day 2 Grand Finale",
+      description: "Project submissions, live jury pitching & the Grand Award Ceremony.",
       accentColor: "#ff2a85",
       icon: Trophy,
     },
   ];
 
-  const container = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.12 },
-    },
-  };
-
-  const itemVariant = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
-
   return (
-    <section id="timeline" className="py-20 relative font-mono select-none text-white">
-      <motion.div
-        ref={ref}
-        className="container mx-auto px-4 max-w-6xl"
-        variants={container}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-      >
-        {/* Section Header */}
-        <motion.div variants={itemVariant} className="text-center mb-16 flex flex-col items-center">
-          <div className="relative mb-3 inline-block">
-            <div className="absolute inset-0 bg-[#ff2a85] translate-x-1 translate-y-1" />
-            <div className="relative bg-white text-black px-4 py-1 text-xs md:text-sm font-bold tracking-widest border-2 border-black flex items-center gap-2">
-              <span className="w-2.5 h-2.5 bg-[#9333ea] inline-block" />
-              DIRECTORY_02 // TIMELINE
-            </div>
-          </div>
-
-          <h2
-            className={`text-4xl md:text-6xl tracking-wider uppercase font-black ${Hacked_KerX.className}`}
-          >
-            <span className="text-white drop-shadow-[2px_2px_0px_#00f0ff]">EVENT </span>
-            <span className="text-[#ff2a85] drop-shadow-[2px_2px_0px_#00f0ff]">TIMELINE</span>
-          </h2>
-          <p className="text-gray-300 text-xs md:text-sm mt-3 tracking-widest uppercase">
-            Execute schedule according to project timeline
-          </p>
-        </motion.div>
-
-        {/* Timeline Track Container */}
-        <div ref={containerRef} className="relative max-w-5xl mx-auto py-8">
-          {/* Ambient Track Backing with Neon Hue */}
-          <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#ff2a85]/30 via-[#b967ff]/20 to-[#00f0ff]/30 transform md:-translate-x-1/2" />
-
-          {/* Magical Aurora Progress Line */}
+    <section id="timeline" className="relative py-20 px-4 sm:px-6 md:px-8 bg-black text-white select-none">
+      <div className="container max-w-5xl mx-auto">
+        {/* GTA STYLE HEADER & EXTENDING LINE ON THE SAME ROW */}
+        <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-12 sm:mb-16">
           <motion.div
-            className="absolute left-6 md:left-1/2 top-0 w-[3px] bg-gradient-to-b from-[#ff2a85] via-[#b967ff] to-[#00f0ff] origin-top z-10 transform md:-translate-x-1/2 shadow-[0_0_15px_#00f0ff,0_0_25px_#ff2a85]"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6 }}
+            className="shrink-0"
+          >
+            <h2
+              className={`
+                text-4xl
+                sm:text-6xl
+                md:text-7xl
+                lg:text-8xl
+                font-pricedown
+                tracking-tight
+                text-white
+                ${pricedown.className}
+                [-webkit-text-stroke:2px_#000000]
+                sm:[-webkit-text-stroke:3px_#000000]
+                drop-shadow-[4px_4px_0px_rgba(0,0,0,0.9)]
+                select-none
+                whitespace-nowrap
+              `}
+            >
+              EVENT <span className="text-[#00f0ff]">TIMELINE</span>
+            </h2>
+          </motion.div>
+
+          {/* PLAIN LINE EXTENDING ON THE SAME ROW */}
+          <motion.div
+            initial={{ opacity: 0, scaleX: 0 }}
+            whileInView={{ opacity: 1, scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            style={{ transformOrigin: "left" }}
+            className="flex-1 h-[2px] bg-white"
+          />
+        </div>
+
+        {/* TIMELINE TRACK */}
+        <div ref={containerRef} className="relative max-w-4xl mx-auto py-4">
+          {/* Central Track Line Backing */}
+          <div className="absolute left-4 sm:left-6 md:left-1/2 top-4 bottom-4 w-[2px] bg-white/15 -translate-x-1/2" />
+
+          {/* Animated Glowing Progress Line */}
+          <motion.div
+            className="absolute left-4 sm:left-6 md:left-1/2 top-4 w-[2px] bg-gradient-to-b from-[#00f0ff] via-[#ff2a85] to-[#00f0ff] origin-top z-10 -translate-x-1/2 shadow-[0_0_12px_#00f0ff]"
             style={{ height: timelineHeight }}
           />
 
-          {/* Magical Particle Sparkle Fountain Head */}
-          <motion.div
-            className="absolute left-6 md:left-1/2 -translate-x-1/2 z-20 pointer-events-none"
-            style={{ top: cometTop }}
-          >
-            <SparkleEmitter />
-          </motion.div>
+          {/* Events List */}
+          <div className="space-y-8 sm:space-y-12">
+            {timelineEvents.map((event, index) => {
+              const Icon = event.icon;
+              const isEven = index % 2 === 0;
 
-          {timelineEvents.map((event, index) => {
-            const Icon = event.icon;
-            const isLeft = index % 2 === 0;
-
-            return (
-              <div key={index} className="relative mb-14 md:mb-20 last:mb-0">
-                {/* Node Milestone Diamond */}
-                <div
-                  style={{
-                    boxShadow: `0 0 10px ${event.accentColor}`,
-                    borderColor: event.accentColor,
-                  }}
-                  className="absolute left-6 md:left-1/2 top-6 w-4 h-4 bg-[#1e1e2f] border-2 transform -translate-x-1/2 rotate-45 z-20 flex items-center justify-center transition-all duration-300"
-                >
+              return (
+                <div key={event.phase} className="relative flex items-center">
+                  {/* Timeline Node Diamond Marker */}
                   <div
-                    style={{ backgroundColor: event.accentColor }}
-                    className="w-1.5 h-1.5"
-                  />
-                </div>
-
-                {/* Alternating Grid Layout */}
-                <div
-                  className={`flex flex-col md:flex-row items-stretch ${isLeft ? "md:flex-row" : "md:flex-row-reverse"
-                    }`}
-                >
-                  <div className="hidden md:block md:w-1/2" />
-                  <div
-                    className={`pl-14 md:pl-0 md:w-1/2 ${isLeft ? "md:pl-10" : "md:pr-10"
-                      }`}
+                    style={{
+                      borderColor: event.accentColor,
+                      boxShadow: `0 0 12px ${event.accentColor}`,
+                    }}
+                    className="absolute left-4 sm:left-6 md:left-1/2 -translate-x-1/2 w-4 h-4 bg-black border-2 rotate-45 z-20 flex items-center justify-center"
                   >
-                    <motion.div
-                      variants={itemVariant}
-                      initial="hidden"
-                      whileInView="visible"
-                      viewport={{ once: true, margin: "-60px" }}
+                    <div
+                      style={{ backgroundColor: event.accentColor }}
+                      className="w-1.5 h-1.5"
+                    />
+                  </div>
+
+                  {/* Card Content Grid */}
+                  <div
+                    className={`w-full flex flex-col md:flex-row items-center ${
+                      isEven ? "md:flex-row" : "md:flex-row-reverse"
+                    }`}
+                  >
+                    {/* Event Card */}
+                    <div
+                      className={`w-full md:w-1/2 pl-10 sm:pl-14 md:pl-0 ${
+                        isEven ? "md:pr-10" : "md:pl-10"
+                      }`}
                     >
-                      <TiltCard dropShadowColor={event.accentColor}>
-                        {/* Title Bar */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 25, x: isEven ? -15 : 15 }}
+                        whileInView={{ opacity: 1, y: 0, x: 0 }}
+                        viewport={{ once: true, margin: "-40px" }}
+                        transition={{ duration: 0.5, delay: 0.05 * index }}
+                        className="
+                          relative
+                          group
+                          overflow-hidden
+                          bg-[#0c0517]/95
+                          backdrop-blur-xl
+                          border
+                          border-white/15
+                          hover:border-[#ff2a85]/60
+                          rounded-2xl
+                          p-5
+                          sm:p-6
+                          transition-all
+                          duration-300
+                          hover:-translate-y-1.5
+                          shadow-[0_10px_30px_rgba(0,0,0,0.8),_3px_3px_0px_#00f0ff]
+                          hover:shadow-[0_15px_40px_rgba(255,42,133,0.35),_4px_4px_0px_#ff2a85]
+                        "
+                      >
+                        {/* Top Ambient Glow Line */}
                         <div
                           style={{
-                            background: `linear-gradient(to right, ${event.accentColor}, #fbcfe8 60%, #eeeeee)`,
+                            backgroundImage: `linear-gradient(to right, transparent, ${event.accentColor}, transparent)`,
                           }}
-                          className="px-3 py-1.5 border-b-2 border-[#1e1e2f] flex items-center justify-between select-none shrink-0"
-                        >
-                          <div className="flex items-center gap-2 truncate">
-                            <span className="text-[10px] text-[#1e1e2f] leading-none">
-                              ■
-                            </span>
-                            <span className="font-mono font-bold text-xs uppercase text-[#1e1e2f] tracking-wider truncate">
-                              {event.file}
-                            </span>
-                          </div>
+                          className="absolute inset-x-0 top-0 h-[2px] opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                        />
 
-                          <WindowControls closeColor={event.accentColor} />
-                        </div>
+                        {/* Subtle Shimmer Sweep */}
+                        <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
 
-                        {/* Card Body */}
-                        <div
-                          style={{ boxShadow: BEVEL_INSET }}
-                          className="m-2 p-4 sm:p-5 flex items-start gap-4 flex-1 bg-[#f7f7f9] border border-[#d0d0d8]"
-                        >
-                          {/* 3D Icon Badge */}
-                          <div
-                            style={{
-                              transform: "translateZ(35px)",
-                              transformStyle: "preserve-3d",
-                              boxShadow: `3px 3px 0px 0px ${event.accentColor}`,
-                            }}
-                            className="w-11 h-11 bg-[#1e1e2f] border border-[#1e1e2f] flex items-center justify-center shrink-0"
+                        {/* Top Meta Bar */}
+                        <div className="flex items-center justify-between gap-2 mb-3">
+                          <span
+                            style={{ color: event.accentColor }}
+                            className="font-mono text-xs font-bold tracking-widest uppercase flex items-center gap-2"
                           >
-                            <Icon
-                              className="w-5 h-5"
-                              style={{ color: event.accentColor }}
-                            />
-                          </div>
-
-                          {/* Content Details */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1">
-                              <h3 className="font-mono font-black text-sm sm:text-base text-[#1e1e2f] uppercase tracking-tight truncate">
-                                {event.title}
-                              </h3>
+                            <span className="relative flex h-2 w-2">
                               <span
-                                style={{ color: event.accentColor }}
-                                className="font-mono font-black text-xs sm:text-sm tracking-wider whitespace-nowrap"
-                              >
-                                {event.date}
-                              </span>
-                            </div>
+                                style={{ backgroundColor: event.accentColor }}
+                                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                              />
+                              <span
+                                style={{ backgroundColor: event.accentColor }}
+                                className="relative inline-flex rounded-full h-2 w-2"
+                              />
+                            </span>
+                            <Icon className="w-3.5 h-3.5" />
+                            {event.phase}
+                          </span>
 
-                            <p className="font-mono text-xs sm:text-[13px] text-[#64748b] leading-relaxed">
-                              {event.description}
-                            </p>
-                          </div>
+                          <span className="text-xs font-mono font-bold text-white bg-white/10 border border-white/15 px-3 py-1 rounded-md shadow-sm">
+                            {event.date}
+                          </span>
                         </div>
-                      </TiltCard>
-                    </motion.div>
+
+                        {/* Title */}
+                        <h3 className={`text-xl sm:text-2xl font-pricedown tracking-tight text-white mb-2 group-hover:text-[#00f0ff] transition-colors drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)] ${pricedown.className}`}>
+                          {event.title}
+                        </h3>
+
+                        {/* Description */}
+                        <p className="text-sm sm:text-base text-gray-300 leading-relaxed font-sans">
+                          {event.description}
+                        </p>
+                      </motion.div>
+                    </div>
+
+                    {/* Empty Space for the opposite column in desktop */}
+                    <div className="hidden md:block md:w-1/2" />
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

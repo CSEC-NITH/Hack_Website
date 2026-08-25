@@ -8,15 +8,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { scrollToSection } from "@/lib/scroll-utils";
-import localFont from "next/font/local";
 import { useGlitch } from "react-powerglitch";
 import Link from "next/link";
-
-const Hacked_KerX = localFont({
-  src: "../../public/fonts/Hacked-KerX.ttf",
-  variable: "--custom-font",
-  fallback: ["monospace", "sans-serif"],
-});
 
 const navLinks = [
   { name: "Home", href: "#home" },
@@ -97,47 +90,73 @@ export default function Navbar() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-          {/* Logo & Hack title */}
-          <Link
-            href="#home"
-            onClick={(e) => handleNavClick(e, "#home")}
-            className="flex items-center gap-3 group"
-          >
-            <div className="relative w-10 h-10 overflow-hidden rounded-md border border-[#ff2a85]/50 group-hover:border-[#00f0ff] transition-colors">
+          {/* Brand & Logos Section */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* CSEC Logo - Link to external site */}
+            <motion.a
+              href="https://csec.nith.ac.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-sm border-2 border-white overflow-hidden bg-[#19171b]/90 p-1 flex items-center justify-center transition-transform shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.3 }}
+              title="CSEC NITH"
+            >
               <Image
-                src="/placeholder-logo.png"
-                alt="HACK 6.0 Logo"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/csec-RitzmBrgdmOMfzaijUqHFSmOVA4LzO.png"
+                alt="CSEC Logo"
                 fill
-                className="object-cover"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = "none";
+                className="object-contain p-0.5"
+                style={{
+                  filter: "drop-shadow(0 0 8px rgba(0, 240, 255, 0.6))",
                 }}
               />
-              <div className="w-full h-full bg-[#19171b] flex items-center justify-center font-bold text-[#ff2a85] text-xs">
-                H6
-              </div>
-            </div>
+            </motion.a>
 
-            <span
-              className={cn(
-                "text-2xl font-bold tracking-wider transition-all duration-300",
-                Hacked_KerX.className,
-                showHackText
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 -translate-x-4 pointer-events-none md:opacity-100 md:translate-x-0 md:pointer-events-auto"
-              )}
+            {/* Separator */}
+            <div className="h-7 w-px bg-white/40"></div>
+
+            {/* HACK Logo - Link to home section */}
+            <motion.a
+              href="#home"
+              onClick={(e) => handleNavClick(e, "#home")}
+              className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-sm border-2 border-white overflow-hidden bg-[#19171b]/90 p-1 flex items-center justify-center transition-transform shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.3 }}
+              title="HACK 6.0"
             >
-              <span className="text-[#ff2a85] drop-shadow-[0_0_8px_rgba(255,42,133,0.6)]">
-                HACK
-              </span>{" "}
-              <span className="text-[#00f0ff] drop-shadow-[0_0_8px_rgba(0,240,255,0.6)]">
-                6.0
+              <Image
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image%20%2816%29_20250208_222328_0000-50pdDbAwyrTeA1mMlMT3c72vROO2oA.png"
+                alt="HACK Logo"
+                fill
+                className="object-contain p-0.5"
+                style={{
+                  filter: "drop-shadow(0 0 8px rgba(255, 42, 133, 0.6))",
+                }}
+              />
+            </motion.a>
+
+            {/* HACK 6.0 Pure White Text */}
+            <Link
+              href="#home"
+              onClick={(e) => handleNavClick(e, "#home")}
+              className="flex items-center group ml-1"
+            >
+              <span
+                className={cn(
+                  "font-pricedown text-2xl sm:text-3xl tracking-tight text-white transition-all duration-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]",
+                  showHackText
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 -translate-x-4 pointer-events-none md:opacity-100 md:translate-x-0 md:pointer-events-auto"
+                )}
+              >
+                HACK 6.0
               </span>
-            </span>
-          </Link>
+            </Link>
+          </div>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+          <nav className="hidden lg:flex items-center gap-1.5 xl:gap-3">
             {navLinks.map((link) => {
               const isActive =
                 link.href.startsWith("#") &&
@@ -149,27 +168,52 @@ export default function Navbar() {
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
                   className={cn(
-                    "px-3 py-1.5 text-xs xl:text-sm font-mono tracking-wider transition-all uppercase rounded",
+                    "px-2 py-1 font-pricedown text-lg xl:text-xl tracking-tight uppercase whitespace-nowrap transition-all duration-300 relative rounded group inline-block",
                     isActive
-                      ? "text-[#00f0ff] bg-[#00f0ff]/10 border border-[#00f0ff]/40 shadow-[0_0_10px_rgba(0,240,255,0.2)]"
-                      : "text-gray-300 hover:text-[#ff2a85] hover:bg-[#ff2a85]/5"
+                      ? "text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a85] via-[#ff75c3] to-[#00f0ff] drop-shadow-[0_0_10px_rgba(255,42,133,0.9)] scale-105"
+                      : "text-white hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-[#ff2a85] hover:via-[#ff75c3] hover:to-[#ff9ebb] hover:drop-shadow-[0_0_10px_rgba(255,42,133,0.9)] hover:scale-105"
                   )}
                 >
-                  {link.name}
+                  <span>{link.name}</span>
+                  {/* Stylized GTA neon extension underline */}
+                  <span
+                    className={cn(
+                      "absolute bottom-0 left-0 h-[2.5px] rounded-full transition-all duration-300 pointer-events-none",
+                      isActive
+                        ? "w-full bg-gradient-to-r from-[#ff2a85] via-[#ff75c3] to-[#00f0ff] shadow-[0_0_10px_rgba(255,42,133,0.9)]"
+                        : "w-0 group-hover:w-full bg-gradient-to-r from-[#ff2a85] via-[#ff75c3] to-[#00f0ff] shadow-[0_0_8px_rgba(255,42,133,0.8)]"
+                    )}
+                  />
                 </a>
               );
             })}
           </nav>
 
           {/* Devfolio Register CTA */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
             <a
               href="https://hack-1158.devfolio.co/"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#ff2a85] hover:bg-[#ff2a85]/90 text-white font-mono text-xs uppercase tracking-widest px-4 py-2 border border-[#292929] shadow-[3px_3px_0px_#00f0ff] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_#00f0ff] transition-all font-bold"
+              className="relative group overflow-hidden px-5 py-2 rounded-lg bg-gradient-to-r from-[#ff2a85] via-[#ff007f] to-[#7928ca] text-white font-pricedown text-xl tracking-wider uppercase border border-[#ff75c3]/60 shadow-[0_0_15px_rgba(255,42,133,0.45),_3px_3px_0px_#00f0ff] hover:shadow-[0_0_25px_rgba(255,42,133,0.85),_4px_4px_0px_#00f0ff] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_0_10px_rgba(255,42,133,0.4),_1px_1px_0px_#00f0ff] transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap"
             >
-              Register
+              {/* Shimmer light-sweep effect */}
+              <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
+
+              {/* Pulsing live neon indicator */}
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00f0ff]" />
+              </span>
+
+              <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+                Register
+              </span>
+
+              {/* GTA Arcade Arrow */}
+              <span className="relative z-10 text-[#00f0ff] text-xs transition-transform duration-300 group-hover:translate-x-1 drop-shadow-[0_0_6px_rgba(0,240,255,0.8)]">
+                ▶
+              </span>
             </a>
           </div>
 
@@ -198,7 +242,7 @@ export default function Navbar() {
             transition={{ duration: 0.3 }}
             className="lg:hidden bg-[#0e0419]/95 backdrop-blur-xl border-b border-[#ff2a85]/30 overflow-hidden"
           >
-            <div className="container mx-auto px-4 py-6 flex flex-col gap-3">
+            <div className="container mx-auto px-4 py-5 flex flex-col gap-2">
               {navLinks.map((link) => {
                 const isActive =
                   link.href.startsWith("#") &&
@@ -210,13 +254,21 @@ export default function Navbar() {
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
                     className={cn(
-                      "px-4 py-2.5 text-sm font-mono tracking-wider transition-all uppercase rounded border",
+                      "px-3 py-1.5 font-pricedown text-xl tracking-tight uppercase transition-all duration-300 rounded relative group inline-block",
                       isActive
-                        ? "text-[#00f0ff] bg-[#00f0ff]/10 border-[#00f0ff]/50"
-                        : "text-gray-300 border-transparent hover:border-[#ff2a85]/40 hover:text-[#ff2a85]"
+                        ? "text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a85] via-[#ff75c3] to-[#00f0ff] drop-shadow-[0_0_10px_rgba(255,42,133,0.8)]"
+                        : "text-white hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-[#ff2a85] hover:via-[#ff75c3] hover:to-[#ff9ebb] hover:drop-shadow-[0_0_10px_rgba(255,42,133,0.9)]"
                     )}
                   >
-                    {link.name}
+                    <span>{link.name}</span>
+                    <span
+                      className={cn(
+                        "block h-[2px] transition-all duration-300",
+                        isActive
+                          ? "w-20 bg-gradient-to-r from-[#ff2a85] to-[#00f0ff] shadow-[0_0_8px_rgba(255,42,133,0.8)]"
+                          : "w-0 group-hover:w-20 bg-gradient-to-r from-[#ff2a85] to-[#00f0ff]"
+                      )}
+                    />
                   </a>
                 );
               })}
@@ -225,9 +277,18 @@ export default function Navbar() {
                 href="https://hack-1158.devfolio.co/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 text-center bg-[#ff2a85] text-white font-mono text-sm uppercase tracking-widest py-3 border border-[#292929] shadow-[3px_3px_0px_#00f0ff] font-bold"
+                className="relative group overflow-hidden mt-3 py-3 rounded-lg bg-gradient-to-r from-[#ff2a85] via-[#ff007f] to-[#7928ca] text-white font-pricedown text-xl tracking-wider uppercase border border-[#ff75c3]/60 shadow-[0_0_15px_rgba(255,42,133,0.5),_3px_3px_0px_#00f0ff] flex items-center justify-center gap-2.5 transition-all duration-300"
               >
-                [ Register on Devfolio ]
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00f0ff]" />
+                </span>
+                <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+                  Register on Devfolio
+                </span>
+                <span className="relative z-10 text-[#00f0ff] text-xs drop-shadow-[0_0_6px_rgba(0,240,255,0.8)]">
+                  ▶
+                </span>
               </a>
             </div>
           </motion.div>

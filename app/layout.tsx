@@ -2,6 +2,7 @@ import type React from "react";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
+import { signatur, pricedown } from "../lib/fonts";
 import HackBackground from "./componenets/background";
 
 const inter = Inter({
@@ -29,7 +30,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable} scroll-smooth`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${poppins.variable} ${signatur.variable} ${pricedown.variable} scroll-smooth`}
+    >
       <body className="min-h-screen text-foreground bg-[#19171b] antialiased">
         <HackBackground />
         <div className="relative z-10">{children}</div>

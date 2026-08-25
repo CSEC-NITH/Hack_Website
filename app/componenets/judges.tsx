@@ -351,7 +351,7 @@ export default function JudgesSection() {
                             <div className="grid grid-cols-1 gap-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                 {group.judges.map((judge, judgeIndex) => (
                                     <JudgeCard
-                                        key={judge.name}
+                                        key={`${group.title}-${judge.name}-${judgeIndex}`}
                                         judge={judge}
                                         index={judgeIndex}
                                     />

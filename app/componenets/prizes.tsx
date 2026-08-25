@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
+import { motion } from "framer-motion";
 import {
   Trophy,
   Gift,
@@ -8,350 +9,49 @@ import {
   Hexagon,
   Gem,
   GraduationCap,
+  Sparkles,
 } from "lucide-react";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import { cn } from "@/lib/utils";
-import localFont from "next/font/local";
-
-const Hacked_KerX = localFont({
-  src: "../../public/fonts/Hacked-KerX.ttf",
-  variable: "--custom-font",
-  fallback: ["monospace", "sans-serif"],
-});
-
-const hexToRgba = (hex: string, alpha: number) => {
-  const sanitized = hex.replace("#", "");
-  const bigint = parseInt(sanitized, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
-
-const BEVEL_RAISED =
-    "inset -1px -1px 0 rgba(0,0,0,0.35), inset 1px 1px 0 rgba(255,255,255,0.65)";
-const BEVEL_INSET =
-    "inset 1px 1px 0 rgba(0,0,0,0.1), inset -1px -1px 0 rgba(255,255,255,0.9)";
-
-const crtBootVariants = {
-  hidden: {
-    scaleY: 0.02,
-    opacity: 0,
-    filter: "brightness(3) blur(2px)",
-  },
-  visible: {
-    scaleY: 1,
-    opacity: 1,
-    filter: "brightness(1) blur(0px)",
-    transition: {
-      scaleY: {
-        duration: 0.35,
-        ease: [0.16, 1, 0.3, 1],
-      },
-      opacity: {
-        duration: 0.15,
-      },
-      filter: {
-        duration: 0.5,
-        delay: 0.15,
-      },
-    },
-  },
-};
-
-const TiltCard = ({
-                    children,
-                    className,
-                    dropShadowColor = "#ff2a85",
-                    onMouseEnter,
-                    onMouseLeave,
-                  }: {
-  children: React.ReactNode;
-  className?: string;
-  dropShadowColor?: string;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
-}) => {
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
-
-  const rafRef = useRef<number | null>(null);
-  const rectRef = useRef<DOMRect | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const isTouch =
-          window.matchMedia("(pointer: coarse)").matches ||
-          "ontouchstart" in window ||
-          navigator.maxTouchPoints > 0;
-      setIsTouchDevice(isTouch);
-    }
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const springConfig = { stiffness: 220, damping: 26, mass: 0.5 };
-  const mouseX = useSpring(x, springConfig);
-  const mouseY = useSpring(y, springConfig);
-
-  const rotateX = useTransform(mouseY, [-0.5, 0.5], ["5deg", "-5deg"]);
-  const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-5deg", "5deg"]);
-  const glareX = useTransform(mouseX, [-0.5, 0.5], ["10%", "90%"]);
-  const glareY = useTransform(mouseY, [-0.5, 0.5], ["10%", "90%"]);
-
-  const shadowX = useTransform(mouseX, [-0.5, 0.5], [14, -14]);
-  const shadowY = useTransform(mouseY, [-0.5, 0.5], [14, -14]);
-
-  const boxShadowValue = useTransform([shadowX, shadowY], (latest) => {
-    const [sx, sy] = latest as [number, number];
-    return `${sx}px ${sy}px 0px 0px ${dropShadowColor}, ${sx * 1.4}px ${
-        sy * 1.4 + 10
-    }px 24px -4px rgba(0,0,0,0.45)`;
-  });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isTouchDevice) return;
-    if (!rectRef.current) rectRef.current = e.currentTarget.getBoundingClientRect();
-    const rect = rectRef.current;
-    const clientX = e.clientX;
-    const clientY = e.clientY;
-
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => {
-      const rawX = (clientX - rect.left) / rect.width - 0.5;
-      const rawY = (clientY - rect.top) / rect.height - 0.5;
-      x.set(Math.min(0.5, Math.max(-0.5, rawX)));
-      y.set(Math.min(0.5, Math.max(-0.5, rawY)));
-    });
-  };
-
-  const handleMouseLeaveEvent = () => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rectRef.current = null;
-    x.set(0);
-    y.set(0);
-    setIsPressed(false);
-    if (onMouseLeave) onMouseLeave();
-  };
-
-  const handleMouseEnterEvent = (e: React.MouseEvent<HTMLDivElement>) => {
-    rectRef.current = e.currentTarget.getBoundingClientRect();
-    if (onMouseEnter) onMouseEnter();
-  };
-
-  return (
-      <div className="perspective-[1000px] w-full h-full">
-        <motion.div
-            onMouseMove={handleMouseMove}
-            onMouseEnter={handleMouseEnterEvent}
-            onMouseLeave={handleMouseLeaveEvent}
-            onMouseDown={() => setIsPressed(true)}
-            onMouseUp={() => setIsPressed(false)}
-            style={{
-              rotateX: isTouchDevice ? 0 : rotateX,
-              rotateY: isTouchDevice ? 0 : rotateY,
-              transformPerspective: 1000,
-              transformStyle: "preserve-3d",
-              boxShadow: isTouchDevice
-                  ? `6px 6px 0px 0px ${dropShadowColor}`
-                  : boxShadowValue,
-            }}
-            animate={{ scale: isPressed ? 0.98 : 1 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            className={cn(
-                "group relative bg-[#eeeeee] border-2 border-[#1e1e2f] font-body overflow-hidden select-none flex flex-col justify-between h-full will-change-transform",
-                className
-            )}
-        >
-          {!isTouchDevice && (
-              <motion.div
-                  className="pointer-events-none absolute inset-0 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden"
-                  style={{
-                    background: useTransform([glareX, glareY], (latest) => {
-                      const [gx, gy] = latest as [string, string];
-                      return `radial-gradient(circle at ${gx} ${gy}, rgba(255,255,255,0.4), ${hexToRgba(
-                          dropShadowColor,
-                          0.02
-                      )} 15%, transparent 50%)`;
-                    }),
-                  }}
-              />
-          )}
-          {children}
-        </motion.div>
-      </div>
-  );
-};
-
-const WindowControls = () => (
-    <div className="flex items-center gap-1 shrink-0">
-    <span
-        style={{ boxShadow: BEVEL_RAISED }}
-        className="w-4 h-4 bg-[#c9c9d4] text-[#1e1e2f] flex items-center justify-center text-[9px] font-bold"
-    >
-      _
-    </span>
-      <span
-          style={{ boxShadow: BEVEL_RAISED }}
-          className="w-4 h-4 bg-[#c9c9d4] text-[#1e1e2f] flex items-center justify-center text-[8px] font-bold"
-      >
-      □
-    </span>
-      <span
-          style={{ boxShadow: BEVEL_RAISED }}
-          className="w-4 h-4 bg-[#ff2a85] text-white flex items-center justify-center text-[9px] font-bold"
-      >
-      ×
-    </span>
-    </div>
-);
-
-const Confetti = () => {
-  const confettiPieces = Array.from({ length: 15 }).map((_, i) => {
-    const size = Math.random() * 6 + 4;
-    const left = Math.random() * 100;
-    const animationDuration = Math.random() * 1 + 0.5;
-    const animationDelay = Math.random() * 0.2;
-    const colors = ["#ff2a85", "#00f0ff", "#b967ff", "#ffd319"];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-
-    return (
-        <motion.div
-            key={i}
-            initial={{ top: "-5%", left: `${left}%`, opacity: 0 }}
-            animate={{
-              top: "105%",
-              left: `${left}%`,
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: animationDuration,
-              delay: animationDelay,
-              ease: "linear",
-            }}
-            style={{
-              position: "absolute",
-              width: size,
-              height: size,
-              backgroundColor: color,
-              borderRadius: "50%",
-              boxShadow: `0 0 8px ${color}`,
-              zIndex: 10,
-            }}
-        />
-    );
-  });
-
-  return (
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {confettiPieces}
-      </div>
-  );
-};
+import { pricedown } from "@/lib/fonts";
 
 export default function PrizeSection() {
-  const [sectionRef, sectionInView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-    rootMargin: "50px 0px",
-  });
-
-  const [forcedVisible, setForcedVisible] = useState(false);
-  const [showGrandPrizeConfetti, setShowGrandPrizeConfetti] = useState(false);
-  const [hasTriggeredInitialConfetti, setHasTriggeredInitialConfetti] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setForcedVisible(true);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if ((sectionInView || forcedVisible) && !hasTriggeredInitialConfetti) {
-      setShowGrandPrizeConfetti(true);
-      setHasTriggeredInitialConfetti(true);
-      const hideTimer = setTimeout(() => {
-        setShowGrandPrizeConfetti(false);
-      }, 3000);
-      return () => clearTimeout(hideTimer);
-    }
-  }, [sectionInView, forcedVisible, hasTriggeredInitialConfetti]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.05,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
-  };
-
   const trackPrizes = [
     {
       id: "track-aiml",
       icon: Lightbulb,
-      title: "AI/ML Track",
-      amount: "₹30,000",
-      color: "#00f0ff",
-      filename: "TRACK_AIML.EXE",
-      description: "Outstanding performance and creative solutions in AI & Machine Learning",
+      title: "AI / ML Track",
+      totalAmount: "₹30,000",
+      accentColor: "#00f0ff",
+      description: "Breakthrough machine learning models, autonomous systems & neural innovations.",
       distribution: [
-        { position: "1st", amount: "₹15,000" },
-        { position: "2nd", amount: "₹10,000" },
-        { position: "3rd", amount: "₹5,000" },
+        { rank: "1st", amount: "₹15,000" },
+        { rank: "2nd", amount: "₹10,000" },
+        { rank: "3rd", amount: "₹5,000" },
       ],
     },
     {
       id: "track-blockchain",
       icon: Hexagon,
-      title: "Blockchain Track",
-      amount: "₹30,000",
-      color: "#ff2a85",
-      filename: "TRACK_BLOCKCHAIN.EXE",
-      description: "Exceptional decentralized applications and Web3 solutions",
+      title: "Blockchain & Web3",
+      totalAmount: "₹30,000",
+      accentColor: "#ff2a85",
+      description: "Decentralized architecture, smart contracts, and Web3 ecosystem utilities.",
       distribution: [
-        { position: "1st", amount: "₹15,000" },
-        { position: "2nd", amount: "₹10,000" },
-        { position: "3rd", amount: "₹5,000" },
+        { rank: "1st", amount: "₹15,000" },
+        { rank: "2nd", amount: "₹10,000" },
+        { rank: "3rd", amount: "₹5,000" },
       ],
     },
     {
       id: "track-open",
       icon: Gem,
-      title: "Open Innovation Track",
-      amount: "₹30,000",
-      color: "#00f0ff",
-      filename: "TRACK_OPEN.EXE",
-      description: "Breakthrough ideas and creative hacks outside specialized tracks",
+      title: "Open Innovation",
+      totalAmount: "₹30,000",
+      accentColor: "#00f0ff",
+      description: "Visionary multidisciplinary hacks, hardware integration & wild ideas.",
       distribution: [
-        { position: "1st", amount: "₹15,000" },
-        { position: "2nd", amount: "₹10,000" },
-        { position: "3rd", amount: "₹5,000" },
+        { rank: "1st", amount: "₹15,000" },
+        { rank: "2nd", amount: "₹10,000" },
+        { rank: "3rd", amount: "₹5,000" },
       ],
     },
   ];
@@ -360,249 +60,309 @@ export default function PrizeSection() {
     {
       id: "special-girls",
       icon: Gift,
-      title: "All Girls Team",
+      title: "All-Girls Squad",
       amount: "₹10,000",
-      color: "#ff2a85",
-      filename: "CATEGORY_GIRLS.DLL",
-      description: "Best hack developed by an all-female team.",
+      accentColor: "#ff2a85",
+      description: "Top-scoring project built by an all-female innovator team.",
     },
     {
       id: "special-beginners",
       icon: GraduationCap,
-      title: "Beginners Team",
+      title: "Best Freshers Hack",
       amount: "₹10,000",
-      color: "#00f0ff",
-      filename: "CATEGORY_BEGINNERS.DLL",
-      description: "Best hack by a first-year beginner team.",
+      accentColor: "#00f0ff",
+      description: "Most outstanding project presented by a 1st year beginner team.",
     },
   ];
 
   return (
-      <section
-          id="prizes"
-          className="py-16 md:py-24 relative overflow-hidden text-white font-mono select-none"
-      >
-        <div ref={sectionRef} className="max-w-6xl mx-auto px-4 sm:px-6">
-          {/* Section Header */}
+    <section id="prizes" className="relative py-20 px-4 sm:px-6 md:px-8 bg-black text-white select-none">
+      <div className="container max-w-5xl mx-auto">
+        {/* GTA STYLE HEADER & EXTENDING LINE ON THE SAME ROW */}
+        <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-12 sm:mb-16">
           <motion.div
-              variants={crtBootVariants}
-              initial="hidden"
-              animate={sectionInView || forcedVisible ? "visible" : "hidden"}
-              className="text-center mb-12 md:mb-16 flex flex-col items-center"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6 }}
+            className="shrink-0"
           >
-            <div className="relative mb-3 inline-block">
-              <div className="absolute inset-0 bg-[#ff2a85] translate-x-1 translate-y-1" />
-              <div className="relative bg-white text-black px-4 py-1 text-xs md:text-sm font-bold tracking-widest border-2 border-black flex items-center gap-2">
-                <span className="w-2.5 h-2.5 bg-[#9333ea] inline-block" />
-                DIRECTORY_03 // PRIZES
-              </div>
-            </div>
-
             <h2
-                className={`text-4xl md:text-6xl tracking-wider uppercase font-black ${Hacked_KerX.className}`}
+              className={`
+                text-4xl
+                sm:text-6xl
+                md:text-7xl
+                lg:text-8xl
+                font-pricedown
+                tracking-tight
+                text-white
+                ${pricedown.className}
+                [-webkit-text-stroke:2px_#000000]
+                sm:[-webkit-text-stroke:3px_#000000]
+                drop-shadow-[4px_4px_0px_rgba(0,0,0,0.9)]
+                select-none
+                whitespace-nowrap
+              `}
             >
-              <span className="text-white drop-shadow-[2px_2px_0px_#00f0ff]">PRIZE </span>
-              <span className="text-[#ff2a85] drop-shadow-[2px_2px_0px_#00f0ff]">POOL</span>
+              PRIZE <span className="text-[#ff2a85]">POOL</span>
             </h2>
-
-            <p className="text-gray-300 text-xs sm:text-sm mt-3 tracking-widest uppercase">
-              Compete, innovate, and claim your share of the bounty
-            </p>
           </motion.div>
 
-          {/* Main Layout */}
+          {/* PLAIN LINE EXTENDING ON THE SAME ROW */}
           <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={sectionInView || forcedVisible ? "visible" : "hidden"}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch"
+            initial={{ opacity: 0, scaleX: 0 }}
+            whileInView={{ opacity: 1, scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            style={{ transformOrigin: "left" }}
+            className="flex-1 h-[2px] bg-white"
+          />
+        </div>
+
+        {/* PRIZES GRID */}
+        <div className="space-y-8">
+          {/* FEATURED: GRAND CHAMPION PRIZE CARD */}
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="
+              relative
+              group
+              overflow-hidden
+              bg-gradient-to-b from-[#16062b]/95 via-[#0e0419]/98 to-[#06020c]
+              backdrop-blur-xl
+              border
+              border-[#ff2a85]/50
+              hover:border-[#ff2a85]
+              rounded-3xl
+              p-6
+              sm:p-10
+              transition-all
+              duration-300
+              shadow-[0_12px_40px_rgba(0,0,0,0.9),_4px_4px_0px_#ff2a85]
+              hover:shadow-[0_20px_50px_rgba(255,42,133,0.4),_6px_6px_0px_#00f0ff]
+              hover:-translate-y-1
+            "
           >
-            {/* GRAND PRIZE */}
-            <motion.div
-                variants={itemVariants}
-                className="lg:col-span-6 flex flex-col h-full"
-            >
-              <TiltCard
-                  dropShadowColor="#ff2a85"
-                  onMouseEnter={() => setShowGrandPrizeConfetti(true)}
-                  onMouseLeave={() => setShowGrandPrizeConfetti(false)}
-              >
-                <div className="bg-gradient-to-r from-[#ff71ce] via-[#fbcfe8] to-[#eeeeee] px-3 py-2 border-b-2 border-[#1e1e2f] flex items-center justify-between">
-                <span className="font-mono font-bold text-xs uppercase text-[#1e1e2f] tracking-wider">
-                  GRAND_PRIZE.EXE
-                </span>
-                  <WindowControls />
+            {/* Top Ambient Glow Line */}
+            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-[#ff2a85] to-transparent" />
+
+            {/* Shimmer Light Sweep */}
+            <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+              <div className="flex flex-col sm:flex-row items-center gap-5">
+                {/* Trophy Badge */}
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-[#ff2a85] to-[#7928ca] p-0.5 shadow-[0_0_20px_rgba(255,42,133,0.6)] flex items-center justify-center shrink-0">
+                  <div className="w-full h-full bg-[#0a0314] rounded-[14px] flex items-center justify-center">
+                    <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-[#00f0ff] drop-shadow-[0_0_10px_#00f0ff]" />
+                  </div>
                 </div>
 
-                <div
-                    style={{ boxShadow: BEVEL_INSET }}
-                    className="m-2.5 p-6 sm:p-8 flex-1 flex flex-col justify-between items-center text-center bg-[#f7f7f9] border border-[#d0d0d8]"
+                <div>
+                  <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+                    <span className="font-mono text-xs font-bold text-[#ff2a85] uppercase tracking-widest flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-[#00f0ff]" />
+                      OVERALL WINNER
+                    </span>
+                  </div>
+
+                  <h3 className={`text-2xl sm:text-3xl md:text-4xl font-pricedown tracking-tight text-white ${pricedown.className}`}>
+                    GRAND CHAMPION
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-gray-300 max-w-md mt-1 font-sans">
+                    Awarded to the most exceptional, high-impact project across technical difficulty, UI/UX, and execution.
+                  </p>
+                </div>
+              </div>
+
+              {/* Grand Prize Number */}
+              <div className="flex flex-col items-center md:items-end shrink-0">
+                <span className="text-xs font-mono font-bold tracking-widest text-gray-400 uppercase mb-1">
+                  BOUNTY VALUE
+                </span>
+                <div className={`text-5xl sm:text-6xl md:text-7xl font-pricedown tracking-tight text-[#00f0ff] drop-shadow-[0_2px_12px_rgba(0,240,255,0.7)] ${pricedown.className}`}>
+                  ₹40,000
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* TRACK PRIZES: 3-COLUMN GRID */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+            {trackPrizes.map((track, index) => {
+              const Icon = track.icon;
+
+              return (
+                <motion.div
+                  key={track.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 * index }}
+                  className="
+                    relative
+                    group
+                    overflow-hidden
+                    bg-[#0c0517]/95
+                    backdrop-blur-xl
+                    border
+                    border-white/15
+                    hover:border-[#00f0ff]/60
+                    rounded-2xl
+                    p-5
+                    sm:p-6
+                    transition-all
+                    duration-300
+                    hover:-translate-y-1.5
+                    shadow-[0_8px_25px_rgba(0,0,0,0.8),_3px_3px_0px_#00f0ff]
+                    hover:shadow-[0_12px_35px_rgba(0,240,255,0.3),_4px_4px_0px_#ff2a85]
+                    flex
+                    flex-col
+                    justify-between
+                  "
                 >
+                  {/* Top Ambient Line */}
+                  <div
+                    style={{
+                      backgroundImage: `linear-gradient(to right, transparent, ${track.accentColor}, transparent)`,
+                    }}
+                    className="absolute inset-x-0 top-0 h-[2px] opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                  />
+
+                  {/* Shimmer Sweep */}
+                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
+
                   <div>
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#2b0845] border-2 border-[#ff2a85] shadow-[4px_4px_0px_0px_#00f0ff] flex items-center justify-center mx-auto mb-4">
-                      <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-[#00f0ff] drop-shadow-[0_0_8px_#00f0ff]" />
+                    {/* Header Icon + Total Pool */}
+                    <div className="flex items-center justify-between gap-2 mb-4">
+                      <div
+                        style={{
+                          borderColor: track.accentColor,
+                          boxShadow: `0 0 10px ${track.accentColor}40`,
+                        }}
+                        className="w-10 h-10 rounded-xl bg-black border flex items-center justify-center shrink-0"
+                      >
+                        <Icon className="w-5 h-5" style={{ color: track.accentColor }} />
+                      </div>
+
+                      <div className="text-right">
+                        <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest block">
+                          TRACK POOL
+                        </span>
+                        <span className={`text-xl sm:text-2xl font-pricedown tracking-tight text-white ${pricedown.className}`}>
+                          {track.totalAmount}
+                        </span>
+                      </div>
                     </div>
 
-                    <h2 className="text-xl sm:text-2xl font-mono font-black mb-1 text-[#1e1e2f] tracking-wider uppercase">
-                      GRAND CHAMPION
-                    </h2>
+                    <h4 className={`text-xl sm:text-2xl font-pricedown tracking-tight text-white mb-2 group-hover:text-[#00f0ff] transition-colors ${pricedown.className}`}>
+                      {track.title}
+                    </h4>
 
-                    <div className="text-4xl sm:text-5xl font-mono font-black bg-gradient-to-r from-[#ff2a85] via-[#7928ca] to-[#00f0ff] bg-clip-text text-transparent mb-3">
-                      ₹40,000
-                    </div>
-
-                    <p className="text-[#475569] text-xs sm:text-sm max-w-sm mx-auto leading-relaxed mb-6 font-mono">
-                      Awarded for overall highest score, technical excellence, and impact across all domains.
+                    <p className="text-xs sm:text-sm text-gray-300 leading-relaxed font-sans mb-5">
+                      {track.description}
                     </p>
                   </div>
 
-                  <div className="w-full grid grid-cols-3 gap-2 py-2.5 px-3 bg-[#e2e8f0] border-2 border-[#1e1e2f] text-center font-mono">
-                    <div className="border-r border-[#cbd5e1] pr-1">
-                      <span className="block text-[9px] text-[#64748b] font-bold">AI/ML</span>
-                      <span className="text-xs sm:text-sm font-bold text-[#ff2a85]">₹30,000</span>
+                  {/* Distribution Pills */}
+                  <div className="pt-3 border-t border-white/10 grid grid-cols-3 gap-1.5 text-center">
+                    {track.distribution.map((d) => (
+                      <div key={d.rank} className="bg-white/5 border border-white/10 rounded-lg py-1 px-1">
+                        <span className="block text-[9px] font-mono text-gray-400">{d.rank}</span>
+                        <span className="block text-xs font-mono font-bold text-white">{d.amount}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* SPECIAL CATEGORIES: 2-COLUMN GRID */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 pt-2">
+            {specialCategories.map((spec, index) => {
+              const Icon = spec.icon;
+
+              return (
+                <motion.div
+                  key={spec.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.15 + 0.1 * index }}
+                  className="
+                    relative
+                    group
+                    overflow-hidden
+                    bg-[#0c0517]/95
+                    backdrop-blur-xl
+                    border
+                    border-white/15
+                    hover:border-[#ff2a85]/60
+                    rounded-2xl
+                    p-5
+                    sm:p-6
+                    transition-all
+                    duration-300
+                    hover:-translate-y-1
+                    shadow-[0_8px_25px_rgba(0,0,0,0.8),_3px_3px_0px_#ff2a85]
+                    hover:shadow-[0_12px_35px_rgba(255,42,133,0.3),_4px_4px_0px_#00f0ff]
+                    flex
+                    items-center
+                    justify-between
+                    gap-4
+                  "
+                >
+                  {/* Top Line */}
+                  <div
+                    style={{
+                      backgroundImage: `linear-gradient(to right, transparent, ${spec.accentColor}, transparent)`,
+                    }}
+                    className="absolute inset-x-0 top-0 h-[2px] opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                  />
+
+                  {/* Shimmer Sweep */}
+                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
+
+                  <div className="flex items-center gap-4">
+                    <div
+                      style={{
+                        borderColor: spec.accentColor,
+                        boxShadow: `0 0 10px ${spec.accentColor}40`,
+                      }}
+                      className="w-12 h-12 rounded-xl bg-black border flex items-center justify-center shrink-0"
+                    >
+                      <Icon className="w-6 h-6" style={{ color: spec.accentColor }} />
                     </div>
-                    <div className="border-r border-[#cbd5e1] pr-1">
-                      <span className="block text-[9px] text-[#64748b] font-bold">WEB3</span>
-                      <span className="text-xs sm:text-sm font-bold text-[#00c2cb]">₹30,000</span>
-                    </div>
+
                     <div>
-                      <span className="block text-[9px] text-[#64748b] font-bold">OPEN</span>
-                      <span className="text-xs sm:text-sm font-bold text-[#7928ca]">₹30,000</span>
+                      <h4 className={`text-xl sm:text-2xl font-pricedown tracking-tight text-white mb-0.5 group-hover:text-[#ff2a85] transition-colors ${pricedown.className}`}>
+                        {spec.title}
+                      </h4>
+                      <p className="text-xs text-gray-300 font-sans">
+                        {spec.description}
+                      </p>
                     </div>
                   </div>
-                </div>
 
-                {showGrandPrizeConfetti && <Confetti />}
-              </TiltCard>
-            </motion.div>
-
-            {/* TRACK PRIZES */}
-            <motion.div
-                variants={itemVariants}
-                className="lg:col-span-6 flex flex-col gap-4 justify-between"
-            >
-              {trackPrizes.map((prize) => (
-                  <TiltCard
-                      key={prize.id}
-                      dropShadowColor={prize.color}
-                  >
-                    <div
-                        style={{
-                          background: `linear-gradient(to right, ${prize.color}, #fbcfe8 60%, #eeeeee)`,
-                        }}
-                        className="px-3 py-1.5 border-b-2 border-[#1e1e2f] flex items-center justify-between"
-                    >
-                  <span className="font-mono font-bold text-xs uppercase text-[#1e1e2f] tracking-wider">
-                    {prize.filename}
-                  </span>
-                      <WindowControls />
-                    </div>
-
-                    <div
-                        style={{ boxShadow: BEVEL_INSET }}
-                        className="m-2 p-3 sm:p-4 flex items-start gap-3.5 flex-1 bg-[#f7f7f9] border border-[#d0d0d8]"
-                    >
-                      <div
-                          style={{ boxShadow: `3px 3px 0px 0px ${prize.color}` }}
-                          className="w-10 h-10 bg-[#1e1e2f] border border-[#1e1e2f] flex items-center justify-center shrink-0"
-                      >
-                        <prize.icon className="w-5 h-5" style={{ color: prize.color }} />
-                      </div>
-
-                      <div className="flex-1">
-                        <div className="flex justify-between items-baseline mb-0.5">
-                          <h3 className="font-mono font-black text-sm text-[#1e1e2f] uppercase tracking-wide">
-                            {prize.title}
-                          </h3>
-                          <span
-                              style={{ color: prize.color }}
-                              className="font-mono font-black text-base"
-                          >
-                        {prize.amount}
-                      </span>
-                        </div>
-
-                        <p className="font-mono text-[11px] text-[#64748b] leading-tight mb-2">
-                          {prize.description}
-                        </p>
-
-                        <div className="flex flex-wrap items-center gap-1.5 font-mono text-[9px]">
-                          {prize.distribution.map((dist, i) => (
-                              <span
-                                  key={i}
-                                  className="px-2 py-0.5 bg-[#e2e8f0] text-[#1e1e2f] font-bold border border-[#cbd5e1]"
-                              >
-                          {dist.position}: <span style={{ color: prize.color }}>{dist.amount}</span>
-                        </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </TiltCard>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* SPECIAL CATEGORIES */}
-          <div className="mt-12">
-            <div className="text-center mb-6">
-            <span className="inline-block px-3 py-1 bg-[#1e1e2f] border border-[#ff2a85] text-[#ff2a85] font-mono text-xs font-bold uppercase tracking-wider">
-              SPECIAL CATEGORIES
-            </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {specialCategories.map((prize) => (
-                  <TiltCard
-                      key={prize.id}
-                      dropShadowColor={prize.color}
-                  >
-                    <div
-                        style={{
-                          background: `linear-gradient(to right, ${prize.color}, #fbcfe8 60%, #eeeeee)`,
-                        }}
-                        className="px-3 py-1.5 border-b-2 border-[#1e1e2f] flex items-center justify-between"
-                    >
-                  <span className="font-mono font-bold text-xs uppercase text-[#1e1e2f] tracking-wider">
-                    {prize.filename}
-                  </span>
-                      <WindowControls />
-                    </div>
-
-                    <div
-                        style={{ boxShadow: BEVEL_INSET }}
-                        className="m-2 p-3 sm:p-4 flex items-center gap-3.5 flex-1 bg-[#f7f7f9] border border-[#d0d0d8]"
-                    >
-                      <div
-                          style={{ boxShadow: `3px 3px 0px 0px ${prize.color}` }}
-                          className="w-10 h-10 bg-[#1e1e2f] border border-[#1e1e2f] flex items-center justify-center shrink-0"
-                      >
-                        <prize.icon className="w-5 h-5" style={{ color: prize.color }} />
-                      </div>
-
-                      <div className="flex-1">
-                        <div className="flex justify-between items-baseline mb-0.5">
-                          <h3 className="font-mono font-black text-sm text-[#1e1e2f] uppercase tracking-wide">
-                            {prize.title}
-                          </h3>
-                          <span
-                              style={{ color: prize.color }}
-                              className="font-mono font-black text-base"
-                          >
-                        {prize.amount}
-                      </span>
-                        </div>
-
-                        <p className="font-mono text-[11px] text-[#64748b] leading-tight">
-                          {prize.description}
-                        </p>
-                      </div>
-                    </div>
-                  </TiltCard>
-              ))}
-            </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest block">
+                      BOUNTY
+                    </span>
+                    <span className={`text-2xl sm:text-3xl font-pricedown tracking-tight text-white ${pricedown.className}`}>
+                      {spec.amount}
+                    </span>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
-      </section>
+      </div>
+    </section>
   );
 }

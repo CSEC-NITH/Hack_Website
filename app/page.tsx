@@ -16,16 +16,18 @@ export default function Home() {
     <main className="min-h-screen text-foreground relative z-10">
       <Navbar />
       <HeroSection />
-      <AboutSection />
-      <TimelineSection />
-      <PrizeSection />
-      <JudgesSection />
-      <SponsorsSection />
-      <FaqSection />
-      <OrganizersSection />
-      <TeamSection />
-      <ContactSection />
-      <Footer />
+      <div className="relative z-20 bg-black shadow-[0_-20px_50px_rgba(0,0,0,1)]">
+        <AboutSection />
+        <TimelineSection />
+        <PrizeSection />
+        <JudgesSection />
+        <SponsorsSection />
+        <FaqSection />
+        <OrganizersSection />
+        <TeamSection />
+        <ContactSection />
+        <Footer />
+      </div>
     </main>
   );
 }

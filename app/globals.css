@@ -36,11 +36,35 @@
   --font-sans: var(--font-inter), sans-serif;
   --font-heading: var(--font-poppins), sans-serif;
   --font-mono: monospace;
+  --font-signature: var(--font-signature), cursive;
+  --font-signatur: var(--font-signature), cursive;
+  --font-pricedown: var(--font-pricedown), sans-serif;
 
   --keyframes-accordion-down: accordion-down;
   --keyframes-accordion-up: accordion-up;
   --animation-accordion-down: accordion-down 0.2s ease-out;
   --animation-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@font-face {
+  font-family: "Signatur";
+  src: url("/fonts/Signatur.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pricedown";
+  src: url("/fonts/Pricedown Bl.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-pricedown {
+  font-feature-settings: "liga" 1, "dlig" 1, "calt" 1, "salt" 1, "ss01" 1;
+  font-variant-ligatures: contextual common-ligatures discretionary-ligatures;
 }
 
 /* ========================================================================

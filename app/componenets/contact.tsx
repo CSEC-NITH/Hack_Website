@@ -129,6 +129,11 @@ const TiltCard = ({
   const glareX = useTransform(mouseX, [-0.5, 0.5], ["10%", "90%"]);
   const glareY = useTransform(mouseY, [-0.5, 0.5], ["10%", "90%"]);
 
+  const glareBackground = useTransform([glareX, glareY], (latest) => {
+    const [gx, gy] = latest as [string, string];
+    return `radial-gradient(circle at ${gx} ${gy}, rgba(255,255,255,0.5), transparent 48%)`;
+  });
+
   const shadowX = useTransform(mouseX, [-0.5, 0.5], [17, -17]);
   const shadowY = useTransform(mouseY, [-0.5, 0.5], [17, -17]);
 
@@ -230,10 +235,7 @@ const TiltCard = ({
           <motion.div
             className="pointer-events-none absolute inset-0 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden"
             style={{
-              background: useTransform([glareX, glareY], (latest) => {
-                const [gx, gy] = latest as [string, string];
-                return `radial-gradient(circle at ${gx} ${gy}, rgba(255,255,255,0.5), transparent 48%)`;
-              }),
+              background: glareBackground,
             }}
           />
         )}

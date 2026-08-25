@@ -3,13 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { useGlitch } from "react-powerglitch"
-import localFont from "next/font/local"
-
-const Hacked_KerX = localFont({
-  src: "../../public/fonts/Hacked-KerX.ttf",
-  variable: "--custom-font",
-  fallback: ["monospace", "sans-serif"],
-})
+import { pricedown, signatur } from "../../lib/fonts"
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
@@ -101,214 +95,255 @@ export default function HeroSection() {
   }
 
   return (
-    <section id="home" className="relative select-none overflow-hidden bg-[#0e0419]">
+    <section id="home" className="sticky top-0 select-none overflow-hidden bg-[#0e0419] min-h-screen h-screen z-0">
       {/* PARALLAX BACKGROUND IMAGE */}
       <motion.div
         style={{ y: backgroundY }}
-        className="absolute inset-0 w-full h-[120%] z-0"
+        className="absolute inset-0 w-full h-full min-h-screen z-0"
       >
+        {/* Desktop / Tablet (md, lg) */}
         <img
-          src="/7529524373709043.jpg"
-          alt="Retro Vaporwave City"
-          className="w-full h-full object-cover"
-          style={{
-            filter: "brightness(0.7) contrast(1.15) saturate(1.3) hue-rotate(-10deg)",
-          }}
+          src="/hero/hack6.0%20banner.svg"
+          alt="Hack 6.0 Banner"
+          className="hidden md:block w-full h-full min-h-screen object-cover object-center"
+        />
+        {/* Mobile (sm) */}
+        <img
+          src="/hero/CSEC.svg"
+          alt="CSEC Banner"
+          className="block md:hidden w-full h-[50vh] min-h-screen object-cover object-center"
         />
       </motion.div>
 
       {/* SMOOTH DARK PURPLE TRANSITION GRADIENT */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-[#0e0419]/40 to-[#0e0419] z-10 pointer-events-none" />
 
-      <div className="h-screen flex flex-col relative z-20">
-        {/* Navbar spacing */}
-        <div className="h-20" />
-
-        {/* Main content */}
-        <div className="flex-1 flex items-center justify-center">
-          <motion.div
-            className="container mx-auto px-4 text-center"
-            variants={container}
-            initial="hidden"
-            animate="show"
-          >
-            {/* HACK 6.0 */}
-            <motion.div variants={item} className="relative">
-              <h1
-                className={`
-                  relative
-                  z-10
-                  text-7xl
-                  sm:text-9xl
-                  md:text-9xl
-                  font-bold
-                  mb-4
-                  md:mb-8
-                  text-white
-                  ${Hacked_KerX.className}
-                `}
-              >
-                {/* HACK with glitch-only cyan/pink RGB split */}
-                <span className="relative inline-block">
-                  <span
-                    ref={glitch.ref}
-                    aria-hidden="true"
-                    className="
-                      absolute
-                      inset-0
-                      text-[#00f0ff]
-                      opacity-80
-                      pointer-events-none
-                      mix-blend-screen
-                    "
-                  >
-                    HACK
-                  </span>
-
-                  <span
-                    className="
-                      relative
-                      z-10
-                      inline-block
-                      text-[#ff2a85]
-                      drop-shadow-[3px_3px_0_rgba(0,0,0,0.85)]
-                    "
-                  >
-                    HACK
-                  </span>
-                </span>{" "}
+      <div className="min-h-screen h-screen flex flex-col justify-center items-center relative z-20 px-4 pt-16 pb-6">
+        <motion.div
+          className="container max-w-4xl mx-auto text-center flex flex-col items-center justify-center gap-3 sm:gap-5 md:gap-6"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          {/* HACK 6.0 - MATCHING NAVBAR FONT STYLE */}
+          <motion.div variants={item} className="relative">
+            <h1
+              className={`
+                relative
+                z-10
+                font-pricedown
+                text-6xl
+                sm:text-8xl
+                md:text-[9rem]
+                lg:text-[11rem]
+                tracking-tight
+                text-white
+                ${pricedown.className}
+                drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]
+                select-none
+              `}
+            >
+              {/* Glitch Overlay */}
+              <span className="relative inline-block">
                 <span
+                  ref={glitch.ref}
+                  aria-hidden="true"
                   className="
-                    text-white
-                    drop-shadow-[3px_3px_0_#ff2a85]
+                    absolute
+                    inset-0
+                    text-[#00f0ff]
+                    opacity-80
+                    pointer-events-none
+                    mix-blend-screen
+                    [-webkit-text-stroke:2px_#000000]
+                    sm:[-webkit-text-stroke:3px_#000000]
+                    md:[-webkit-text-stroke:4px_#000000]
+                    drop-shadow-[4px_4px_0px_#000000]
                   "
                 >
-                  6.0
+                  HACK 6.0
                 </span>
-              </h1>
-            </motion.div>
 
-            {/* Aesthetic Register Button */}
-            <motion.div variants={item} className="mt-8 mb-12 relative z-20 flex justify-center">
-              <a
-                href="https://hack-1158.devfolio.co/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  inline-block
-                  bg-[#ff2a85]
-                  text-white
-                  font-mono
-                  font-bold
-                  uppercase
-                  tracking-[0.2em]
-                  text-lg md:text-xl
-                  px-10 py-4
-                  border-2 border-[#292929]
-                  shadow-[5px_5px_0px_#00f0ff]
-                  hover:shadow-[7px_7px_0px_#00f0ff]
-                  active:shadow-[2px_2px_0px_#00f0ff]
-                  active:translate-y-[3px]
-                  active:translate-x-[3px]
-                  transition-all duration-200
-                "
-              >
-                [ Register Now ]
-              </a>
-            </motion.div>
+                <span
+                  className="
+                    relative
+                    z-10
+                    inline-block
+                    text-white
+                    [-webkit-text-stroke:2px_#000000]
+                    sm:[-webkit-text-stroke:3px_#000000]
+                    md:[-webkit-text-stroke:4px_#000000]
+                    drop-shadow-[6px_6px_0px_rgba(0,0,0,0.9)]
+                  "
+                >
+                  HACK 6.0
+                </span>
+              </span>
+            </h1>
           </motion.div>
-        </div>
 
-        {/* Countdown */}
-        <div className="w-full px-4 pb-12 sm:pb-16 relative z-20">
-          <motion.div
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="max-w-xs sm:max-w-md md:max-w-2xl mx-auto"
-          >
-            <motion.div
-              variants={item}
+          {/* Aesthetic Register Button - Navbar Styled with Wider Width */}
+          <motion.div variants={item} className="relative z-20 flex justify-center w-full px-4">
+            <a
+              href="https://hack-1158.devfolio.co/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="
-                mb-3
-                text-center
-                text-sm
-                md:text-base
-                lg:text-lg
-                text-gray-300
-                font-mono
+                relative group overflow-hidden
+                w-full max-w-xs sm:max-w-md md:max-w-lg
+                min-w-[280px] sm:min-w-[360px] md:min-w-[420px]
+                px-10 sm:px-16 py-3.5 sm:py-4 md:py-4.5
+                rounded-xl
+                bg-gradient-to-r from-[#ff2a85] via-[#ff007f] to-[#7928ca]
+                text-white
+                font-pricedown
+                text-2xl md:text-3xl
+                tracking-wider
+                uppercase
+                border border-[#ff75c3]/60
+                shadow-[0_0_20px_rgba(255,42,133,0.5),_4px_4px_0px_#00f0ff]
+                hover:shadow-[0_0_35px_rgba(255,42,133,0.9),_6px_6px_0px_#00f0ff]
+                hover:-translate-y-1
+                active:translate-y-0.5
+                active:shadow-[0_0_15px_rgba(255,42,133,0.4),_2px_2px_0px_#00f0ff]
+                transition-all duration-300
+                flex items-center justify-center gap-4
+                select-none
               "
             >
+              {/* Shimmer light-sweep effect */}
+              <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
+
+              {/* Pulsing live neon indicator */}
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00f0ff]" />
+              </span>
+
+              <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+                Register Now
+              </span>
+
+              {/* GTA Arcade Arrow */}
+              <span className="relative z-10 text-[#00f0ff] text-sm md:text-base transition-transform duration-300 group-hover:translate-x-2 drop-shadow-[0_0_6px_rgba(0,240,255,0.8)]">
+                ▶
+              </span>
+            </a>
+          </motion.div>
+
+          {/* Countdown - Compact Dark Styled */}
+          <motion.div variants={item} className="w-full max-w-xs sm:max-w-sm md:max-w-lg lg:max-w-xl mx-auto mt-1 sm:mt-3 relative z-20">
+            <div
+              className="
+                mb-2.5
+                text-center
+                text-sm
+                sm:text-base
+                md:text-lg
+                text-white
+                font-pricedown
+                uppercase
+                tracking-wider
+                drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]
+                flex
+                items-center
+                justify-center
+                gap-2
+                select-none
+              "
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff2a85] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a85]" />
+              </span>
               Registration Closes in
-            </motion.div>
+            </div>
 
-            <div className="grid grid-cols-4 gap-2 md:gap-3">
+            <div className="grid grid-cols-4 gap-2 sm:gap-2.5 md:gap-3">
               {Object.entries(timeLeft).map(([key, value], index) => {
-                const isPink = key === "days" || key === "seconds"
-
                 return (
-                  <motion.div
+                  <div
                     key={key}
-                    variants={item}
                     className="
-                      bg-[#0f041c]/70
-                      backdrop-blur-sm
+                      relative
+                      group
+                      overflow-hidden
+                      bg-[#0a0314]/90
+                      backdrop-blur-xl
                       p-2
-                      md:p-3
-                      border-2
-                      border-[#292929]
-                      shadow-[3px_3px_0px_#00f0ff]
+                      sm:p-3
+                      md:p-3.5
+                      rounded-xl
+                      border
+                      border-white/15
+                      hover:border-[#ff2a85]/60
+                      shadow-[0_4px_15px_rgba(0,0,0,0.8),_2px_2px_0px_#00f0ff]
+                      hover:shadow-[0_8px_20px_rgba(255,42,133,0.35),_3px_3px_0px_#ff2a85]
+                      hover:-translate-y-0.5
+                      active:translate-y-0.5
+                      transition-all
+                      duration-300
                       flex
                       flex-col
                       items-center
                       justify-center
+                      select-none
                     "
-                    initial={{
-                      opacity: 0,
-                      y: 20,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    transition={{
-                      delay: 0.1 * index,
-                      duration: 0.5,
-                    }}
                   >
+                    {/* Top ambient glow line */}
+                    <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#00f0ff]/50 to-transparent group-hover:via-[#ff2a85]/80 transition-colors duration-300" />
+
+                    {/* Subtle shimmer sweep on hover */}
+                    <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
+
+                    {/* Live neon indicator */}
+                    <span className="absolute top-1.5 right-1.5 flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00f0ff]" />
+                    </span>
+
+                    {/* Pure White Digits */}
                     <div
-                      className={`
+                      className="
                         text-2xl
-                        md:text-3xl
-                        lg:text-4xl
-                        font-bold
-                        font-mono
-                        mb-1
-                        ${isPink ? "text-[#ff2a85]" : "text-[#00f0ff]"}
-                      `}
+                        sm:text-3xl
+                        md:text-4xl
+                        lg:text-5xl
+                        font-pricedown
+                        font-normal
+                        tracking-tight
+                        mb-0.5
+                        text-white
+                        drop-shadow-[0_3px_8px_rgba(0,0,0,0.9)]
+                      "
                     >
                       {value}
                     </div>
 
+                    {/* Unit Label */}
                     <div
                       className="
                         text-[10px]
-                        md:text-xs
-                        lg:text-sm
+                        sm:text-xs
+                        md:text-sm
                         text-gray-300
+                        group-hover:text-white
+                        font-pricedown
                         uppercase
-                        tracking-wider
-                        font-mono
+                        tracking-widest
+                        drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
+                        transition-colors
+                        duration-200
                       "
                     >
                       {key}
                     </div>
-                  </motion.div>
+                  </div>
                 )
               })}
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )
