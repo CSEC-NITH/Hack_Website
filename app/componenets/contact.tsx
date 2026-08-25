@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import {
   Mail,
   MapPin,
@@ -9,279 +9,8 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from "framer-motion";
-import localFont from "next/font/local";
-
-/* ========================================================================
-   FONT
-   ======================================================================== */
-
-const Hacked_KerX = localFont({
-  src: "../../public/fonts/Hacked-KerX.ttf",
-  variable: "--custom-font",
-  fallback: ["monospace", "sans-serif"],
-});
-
-/* ========================================================================
-   WIN9X BEVEL SYSTEM
-   ======================================================================== */
-
-const BEVEL_RAISED =
-  "inset -1px -1px 0 rgba(0,0,0,0.35), inset 1px 1px 0 rgba(255,255,255,0.65)";
-
-const BEVEL_INSET =
-  "inset 1px 1px 0 rgba(255,255,255,0.9), inset -1px -1px 0 rgba(0,0,0,0.25)";
-
-/* ========================================================================
-   CONTACT DATA
-   ======================================================================== */
-
-interface ContactItem {
-  id: string;
-  exeName: string;
-  icon: typeof Mail;
-  title: string;
-  line1: string;
-  value: string;
-  href: string;
-  accentColor: string;
-  textColor: string;
-  hoverColor: string;
-}
-
-const contactChannels: ContactItem[] = [
-  {
-    id: "email",
-    exeName: "MAIL_CLIENT.EXE",
-    icon: Mail,
-    title: "Email Dispatch",
-    line1: "Questions or sponsor inquiries?",
-    value: "csec@nith.ac.in",
-    href: "mailto:csec@nith.ac.in",
-    accentColor: "#00CFE8",
-    textColor: "#243B64",
-    hoverColor: "#FF3B8D",
-  },
-  {
-    id: "location",
-    exeName: "VENUE_COORDINATES.EXE",
-    icon: MapPin,
-    title: "Venue Location",
-    line1: "Join us onsite at the arena",
-    value: "NIT Hamirpur, HP - 177005",
-    href: "https://www.google.com/maps/search/?api=1&query=National+Institute+of+Technology+Hamirpur",
-    accentColor: "#FF3B8D",
-    textColor: "#5A315D",
-    hoverColor: "#FF3B8D",
-  },
-  {
-    id: "phone",
-    exeName: "VOICE_COMMS.EXE",
-    icon: Phone,
-    title: "Helpline Comms",
-    line1: "Student & Team Coordinators",
-    value: "+91 62306 46657 / +91 93582 57509",
-    href: "tel:+916230646657",
-    accentColor: "#00CFE8",
-    textColor: "#243B64",
-    hoverColor: "#FF3B8D",
-  },
-];
-
-/* ========================================================================
-   3D TILT CARD
-   ======================================================================== */
-
-const TiltCard = ({
-  children,
-  className = "",
-  dropShadowColor = "#FF3B8D",
-}: {
-  children: React.ReactNode;
-  className?: string;
-  dropShadowColor?: string;
-}) => {
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
-
-  const rafRef = useRef<number | null>(null);
-  const rectRef = useRef<DOMRect | null>(null);
-
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const springConfig = {
-    stiffness: 220,
-    damping: 26,
-    mass: 0.5,
-  };
-
-  const mouseX = useSpring(x, springConfig);
-  const mouseY = useSpring(y, springConfig);
-
-  const rotateX = useTransform(mouseY, [-0.5, 0.5], ["5deg", "-5deg"]);
-  const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-5deg", "5deg"]);
-  const glareX = useTransform(mouseX, [-0.5, 0.5], ["10%", "90%"]);
-  const glareY = useTransform(mouseY, [-0.5, 0.5], ["10%", "90%"]);
-
-  const glareBackground = useTransform([glareX, glareY], (latest) => {
-    const [gx, gy] = latest as [string, string];
-    return `radial-gradient(circle at ${gx} ${gy}, rgba(255,255,255,0.5), transparent 48%)`;
-  });
-
-  const shadowX = useTransform(mouseX, [-0.5, 0.5], [17, -17]);
-  const shadowY = useTransform(mouseY, [-0.5, 0.5], [17, -17]);
-
-  const boxShadowValue = useTransform([shadowX, shadowY], (latest) => {
-    const [sx, sy] = latest as [number, number];
-    return `${sx}px ${sy}px 0px 0px ${dropShadowColor}, ${
-      sx * 1.6
-    }px ${sy * 1.6 + 14}px 32px -6px rgba(0,0,0,0.55)`;
-  });
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const isTouch =
-        window.matchMedia("(pointer: coarse)").matches ||
-        "ontouchstart" in window ||
-        navigator.maxTouchPoints > 0;
-      setIsTouchDevice(isTouch);
-    }
-
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, []);
-
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isTouchDevice) return;
-    rectRef.current = e.currentTarget.getBoundingClientRect();
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isTouchDevice) return;
-    if (!rectRef.current) {
-      rectRef.current = e.currentTarget.getBoundingClientRect();
-    }
-
-    const rect = rectRef.current;
-    const clientX = e.clientX;
-    const clientY = e.clientY;
-
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-    }
-
-    rafRef.current = requestAnimationFrame(() => {
-      const rawX = (clientX - rect.left) / rect.width - 0.5;
-      const rawY = (clientY - rect.top) / rect.height - 0.5;
-
-      const pctX = Math.min(0.5, Math.max(-0.5, rawX));
-      const pctY = Math.min(0.5, Math.max(-0.5, rawY));
-
-      x.set(pctX);
-      y.set(pctY);
-    });
-  };
-
-  const handleMouseLeave = () => {
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-    }
-    rectRef.current = null;
-    x.set(0);
-    y.set(0);
-    setIsPressed(false);
-  };
-
-  return (
-    <div className="perspective-[1000px] w-full h-full">
-      <motion.div
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseDown={() => setIsPressed(true)}
-        onMouseUp={() => setIsPressed(false)}
-        style={{
-          rotateX: isTouchDevice ? 0 : rotateX,
-          rotateY: isTouchDevice ? 0 : rotateY,
-          transformPerspective: 1000,
-          transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
-          WebkitFontSmoothing: "antialiased",
-          textRendering: "optimizeLegibility",
-          boxShadow: isTouchDevice
-            ? `6px 6px 0px 0px ${dropShadowColor}`
-            : boxShadowValue,
-        }}
-        animate={{
-          scale: isPressed ? 0.98 : 1,
-        }}
-        transition={{
-          duration: 0.15,
-          ease: "easeOut",
-        }}
-        className={`group relative bg-[#f4f4f6] border-2 border-[#1e1e2f] font-mono overflow-hidden select-none flex flex-col h-full will-change-transform ${className}`}
-      >
-        {!isTouchDevice && (
-          <motion.div
-            className="pointer-events-none absolute inset-0 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden"
-            style={{
-              background: glareBackground,
-            }}
-          />
-        )}
-        {children}
-      </motion.div>
-    </div>
-  );
-};
-
-/* ========================================================================
-   WINDOW CONTROLS
-   ======================================================================== */
-
-const WindowControls = ({
-  closeColor = "#FF3B8D",
-}: {
-  closeColor?: string;
-}) => (
-  <div className="flex items-center gap-1.5 flex-shrink-0">
-    <span
-      style={{ boxShadow: BEVEL_RAISED }}
-      className="w-4 h-4 sm:w-5 sm:h-5 bg-[#c9c9d4] text-[#25233A] flex items-center justify-center text-[10px] font-bold"
-    >
-      _
-    </span>
-    <span
-      style={{ boxShadow: BEVEL_RAISED }}
-      className="w-4 h-4 sm:w-5 sm:h-5 bg-[#c9c9d4] text-[#25233A] flex items-center justify-center text-[10px] font-bold"
-    >
-      □
-    </span>
-    <span
-      style={{
-        boxShadow: BEVEL_RAISED,
-        backgroundColor: closeColor,
-      }}
-      className="w-4 h-4 sm:w-5 sm:h-5 text-white flex items-center justify-center text-[10px] font-extrabold"
-    >
-      ×
-    </span>
-  </div>
-);
-
-/* ========================================================================
-   CONTACT SECTION
-   ======================================================================== */
+import { motion } from "framer-motion";
+import { pricedown } from "@/lib/fonts";
 
 export default function ContactSection() {
   const [form, setForm] = useState({
@@ -334,280 +63,321 @@ export default function ContactSection() {
     }
   };
 
+  const contactChannels = [
+    {
+      id: "email",
+      icon: Mail,
+      title: "Email Dispatch",
+      subtitle: "Questions, partnerships & sponsor inquiries",
+      value: "csec@nith.ac.in",
+      href: "mailto:csec@nith.ac.in",
+      accentColor: "#00f0ff",
+    },
+    {
+      id: "location",
+      icon: MapPin,
+      title: "Onsite Arena Venue",
+      subtitle: "Join us in person at NIT Hamirpur campus",
+      value: "NIT Hamirpur, HP - 177005",
+      href: "https://www.google.com/maps/search/?api=1&query=National+Institute+of+Technology+Hamirpur",
+      accentColor: "#ff2a85",
+    },
+    {
+      id: "phone",
+      icon: Phone,
+      title: "Helpline & Lead Comms",
+      subtitle: "Student & Team Lead Coordinators",
+      value: "+91 62306 46657 / +91 93582 57509",
+      href: "tel:+916230646657",
+      accentColor: "#00f0ff",
+    },
+  ];
+
   return (
-    <motion.section
-      id="contact"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.8 }}
-      className="relative py-24 px-4 sm:px-6"
-    >
-      <div className="container relative mx-auto max-w-6xl">
-        {/* HEADER */}
-        <div className="mb-16 text-center">
-          <div className="relative inline-block">
+    <section id="contact" className="relative py-20 px-4 sm:px-6 md:px-8 bg-black text-white select-none">
+      <div className="container max-w-5xl mx-auto">
+        {/* GTA STYLE HEADER & EXTENDING LINE ON THE SAME ROW */}
+        <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-12 sm:mb-16">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6 }}
+            className="shrink-0"
+          >
             <h2
-              className={`text-3xl sm:text-4xl md:text-5xl font-black tracking-[0.15em] uppercase text-white ${Hacked_KerX.className}`}
+              className={`
+                text-4xl
+                sm:text-6xl
+                md:text-7xl
+                lg:text-8xl
+                font-pricedown
+                tracking-tight
+                text-white
+                ${pricedown.className}
+                [-webkit-text-stroke:2px_#000000]
+                sm:[-webkit-text-stroke:3px_#000000]
+                drop-shadow-[4px_4px_0px_rgba(0,0,0,0.9)]
+                select-none
+                whitespace-nowrap
+              `}
             >
-              GET <span className="text-[#FF3B8D]">IN TOUCH</span>
+              GET IN <span className="text-[#00f0ff]">TOUCH</span>
             </h2>
-          </div>
+          </motion.div>
 
-          <div className="mx-auto mt-4 h-1 w-32 bg-gradient-to-r from-[#FF3B8D] via-[#b967ff] to-[#00CFE8] shadow-[0_0_12px_#FF3B8D]" />
-
-          <p className="mx-auto mt-5 max-w-2xl font-mono text-xs sm:text-sm md:text-base font-semibold text-[#ffffff]">
-            Have queries regarding HACK 6.0? Connect with the operations grid
-            through the channels below.
-          </p>
+          {/* PLAIN LINE EXTENDING ON THE SAME ROW */}
+          <motion.div
+            initial={{ opacity: 0, scaleX: 0 }}
+            whileInView={{ opacity: 1, scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            style={{ transformOrigin: "left" }}
+            className="flex-1 h-[2px] bg-white"
+          />
         </div>
 
         {/* MAIN GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* LEFT — MESSAGE WINDOW */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* LEFT: TRANSMISSION FORM */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="lg:col-span-7 flex flex-col"
+            className="
+              lg:col-span-7
+              relative
+              group
+              overflow-hidden
+              bg-[#0c0517]/95
+              backdrop-blur-xl
+              border
+              border-white/15
+              hover:border-[#ff2a85]/60
+              rounded-3xl
+              p-6
+              sm:p-8
+              transition-all
+              duration-300
+              shadow-[0_12px_40px_rgba(0,0,0,0.8),_3px_3px_0px_#00f0ff]
+            "
           >
-            <TiltCard dropShadowColor="#FF3B8D" className="border-2 border-black">
-              {/* TITLE BAR */}
-              <div className="bg-gradient-to-r from-[#ff71ce] via-[#fbcfe8] to-[#f4f4f6] px-3 py-2 border-b-2 border-black flex items-center justify-between select-none shrink-0">
-                <div className="flex items-center gap-2 truncate">
-                  <span className="text-[10px] text-[#25233A] leading-none">
-                    ■
-                  </span>
-                  <span className="font-bold text-xs uppercase text-[#25233A] tracking-wider truncate">
-                    DISPATCH_MESSAGE.EXE
-                  </span>
+            {/* Top Ambient Glow Line */}
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#ff2a85] to-transparent" />
+
+            <div className="flex items-center gap-2 mb-6">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00f0ff]" />
+              </span>
+              <h3 className={`text-2xl sm:text-3xl font-pricedown tracking-tight text-white ${pricedown.className}`}>
+                DISPATCH MESSAGE
+              </h3>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono font-bold uppercase tracking-wider text-gray-300 block">
+                    Your Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Alex Chen"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="w-full bg-[#140a24]/90 border border-white/15 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-all focus:border-[#00f0ff] focus:shadow-[0_0_15px_rgba(0,240,255,0.3)] font-sans"
+                  />
                 </div>
-                <WindowControls closeColor="#FF3B8D" />
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono font-bold uppercase tracking-wider text-gray-300 block">
+                    Your Email
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="alex@domain.com"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="w-full bg-[#140a24]/90 border border-white/15 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-all focus:border-[#ff2a85] focus:shadow-[0_0_15px_rgba(255,42,133,0.3)] font-sans"
+                  />
+                </div>
               </div>
 
-              {/* FORM BODY */}
-              <div
-                style={{ boxShadow: BEVEL_INSET }}
-                className="m-2 p-5 sm:p-7 flex-1 bg-[#f4f4f6]"
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono font-bold uppercase tracking-wider text-gray-300 block">
+                  Subject Header
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Track Query / Partnership Proposal"
+                  value={form.subject}
+                  onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                  className="w-full bg-[#140a24]/90 border border-white/15 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-all focus:border-[#00f0ff] focus:shadow-[0_0_15px_rgba(0,240,255,0.3)] font-sans"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono font-bold uppercase tracking-wider text-gray-300 block">
+                  Message Payload
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  placeholder="Write your transmission here..."
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  className="w-full resize-none bg-[#140a24]/90 border border-white/15 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-all focus:border-[#ff2a85] focus:shadow-[0_0_15px_rgba(255,42,133,0.3)] font-sans"
+                />
+              </div>
+
+              {/* Status Feedback */}
+              {submitStatus === "success" && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-2.5 bg-emerald-950/80 border border-emerald-500/50 rounded-xl p-3.5 text-xs font-mono font-bold text-emerald-300"
+                >
+                  <CheckCircle2 size={18} className="shrink-0 text-emerald-400" />
+                  <span>TRANSMISSION DISPATCHED SUCCESSFULLY! WE WILL CONNECT SHORTLY.</span>
+                </motion.div>
+              )}
+
+              {submitStatus === "error" && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-2.5 bg-rose-950/80 border border-rose-500/50 rounded-xl p-3.5 text-xs font-mono font-bold text-rose-300"
+                >
+                  <AlertCircle size={18} className="shrink-0 text-rose-400" />
+                  <span>TRANSMISSION FAILED. PLEASE VERIFY DETAILS AND RETRY.</span>
+                </motion.div>
+              )}
+
+              {/* Submit CTA Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="
+                  relative group overflow-hidden
+                  w-full
+                  py-3.5
+                  rounded-xl
+                  bg-gradient-to-r from-[#ff2a85] via-[#ff007f] to-[#7928ca]
+                  text-white
+                  font-pricedown
+                  text-xl md:text-2xl
+                  tracking-wider
+                  uppercase
+                  border border-[#ff75c3]/60
+                  shadow-[0_0_20px_rgba(255,42,133,0.5),_3px_3px_0px_#00f0ff]
+                  hover:shadow-[0_0_30px_rgba(255,42,133,0.8),_4px_4px_0px_#00f0ff]
+                  hover:-translate-y-0.5
+                  active:translate-y-0.5
+                  transition-all duration-300
+                  flex items-center justify-center gap-3
+                  cursor-pointer
+                  disabled:opacity-60
+                  select-none
+                "
               >
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  {/* NAME + EMAIL */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div className="space-y-1.5">
-                      <label className="flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-[#25233A]">
-                        <span className="text-[#FF3B8D] font-black">&gt;</span>
-                        SENDER_NAME
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. Alex Chen"
-                        value={form.name}
-                        onChange={(e) =>
-                          setForm({ ...form, name: e.target.value })
-                        }
-                        className="w-full border-2 border-[#1e1e2f] bg-white px-3.5 py-2.5 font-mono text-xs sm:text-sm text-[#25233A] placeholder-[#4B556B] outline-none transition-all focus:border-[#FF3B8D] focus:shadow-[3px_3px_0_#00CFE8]"
-                      />
-                    </div>
+                {/* Shimmer Light Sweep */}
+                <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
 
-                    <div className="space-y-1.5">
-                      <label className="flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-[#25233A]">
-                        <span className="text-[#00CFE8] font-black">&gt;</span>
-                        SENDER_EMAIL
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        placeholder="alex@domain.com"
-                        value={form.email}
-                        onChange={(e) =>
-                          setForm({ ...form, email: e.target.value })
-                        }
-                        className="w-full border-2 border-[#1e1e2f] bg-white px-3.5 py-2.5 font-mono text-xs sm:text-sm text-[#25233A] placeholder-[#4B556B] outline-none transition-all focus:border-[#00CFE8] focus:shadow-[3px_3px_0_#FF3B8D]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* SUBJECT */}
-                  <div className="space-y-1.5">
-                    <label className="flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-[#25233A]">
-                      <span className="text-[#FF3B8D] font-black">&gt;</span>
-                      SUBJECT_HEADER
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Hackathon Track Query / Sponsor Opportunity"
-                      value={form.subject}
-                      onChange={(e) =>
-                        setForm({ ...form, subject: e.target.value })
-                      }
-                      className="w-full border-2 border-[#1e1e2f] bg-white px-3.5 py-2.5 font-mono text-xs sm:text-sm text-[#25233A] placeholder-[#4B556B] outline-none transition-all focus:border-[#FF3B8D] focus:shadow-[3px_3px_0_#00CFE8]"
-                    />
-                  </div>
-
-                  {/* MESSAGE */}
-                  <div className="space-y-1.5">
-                    <label className="flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-[#25233A]">
-                      <span className="text-[#00CFE8] font-black">&gt;</span>
-                      MESSAGE_PAYLOAD
-                    </label>
-                    <textarea
-                      required
-                      rows={4}
-                      placeholder="Write your transmission here..."
-                      value={form.message}
-                      onChange={(e) =>
-                        setForm({ ...form, message: e.target.value })
-                      }
-                      className="w-full resize-none border-2 border-[#1e1e2f] bg-white px-3.5 py-2.5 font-mono text-xs sm:text-sm text-[#25233A] placeholder-[#4B556B] outline-none transition-all focus:border-[#00CFE8] focus:shadow-[3px_3px_0_#FF3B8D]"
-                    />
-                  </div>
-
-                  {/* STATUS MESSAGES */}
-                  {submitStatus === "success" && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center gap-2 border-2 border-[#1e1e2f] bg-[#e2e8f0] p-3 font-mono text-xs font-bold text-[#166534] shadow-[3px_3px_0_#00CFE8]"
-                    >
-                      <CheckCircle2 size={16} className="shrink-0" />
-                      <span>TRANSMISSION SENT SUCCESSFULLY</span>
-                    </motion.div>
-                  )}
-
-                  {submitStatus === "error" && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center gap-2 border-2 border-[#1e1e2f] bg-[#ffe4e6] p-3 font-mono text-xs font-bold text-[#e11d48] shadow-[3px_3px_0_#FF3B8D]"
-                    >
-                      <AlertCircle size={16} className="shrink-0" />
-                      <span>TRANSMISSION FAILED. PLEASE RETRY.</span>
-                    </motion.div>
-                  )}
-
-                  {/* SUBMIT BUTTON */}
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex w-full cursor-pointer items-center justify-center gap-2 border-2 border-[#1e1e2f] bg-gradient-to-r from-[#FF3B8D] via-[#b967ff] to-[#7928ca] px-6 py-3.5 font-mono text-xs sm:text-sm font-bold uppercase tracking-[0.15em] text-white shadow-[4px_4px_0_#00CFE8] transition-all hover:brightness-110 active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-60"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        <span>TRANSMITTING...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send size={15} />
-                        <span>[ TRANSMIT MESSAGE ]</span>
-                      </>
-                    )}
-                  </button>
-                </form>
-              </div>
-            </TiltCard>
+                {isSubmitting ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <span>TRANSMITTING...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>SEND TRANSMISSION</span>
+                    <Send className="w-4 h-4 text-[#00f0ff] transition-transform duration-300 group-hover:translate-x-1" />
+                  </>
+                )}
+              </button>
+            </form>
           </motion.div>
 
-          {/* RIGHT — CONTACT CARDS */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="lg:col-span-5 flex flex-col gap-5 justify-between"
-          >
-            {contactChannels.map((item) => {
-              const Icon = item.icon;
+          {/* RIGHT: CONTACT CHANNELS */}
+          <div className="lg:col-span-5 space-y-4">
+            {contactChannels.map((channel, index) => {
+              const Icon = channel.icon;
 
               return (
-                <TiltCard
-                  key={item.id}
-                  dropShadowColor={item.accentColor}
-                  className="border-2 border-black"
+                <motion.a
+                  key={channel.id}
+                  href={channel.href}
+                  target={channel.id === "location" ? "_blank" : undefined}
+                  rel={channel.id === "location" ? "noopener noreferrer" : undefined}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 * index }}
+                  className="
+                    relative
+                    group
+                    overflow-hidden
+                    bg-[#0c0517]/95
+                    backdrop-blur-xl
+                    border
+                    border-white/15
+                    hover:border-[#00f0ff]/60
+                    rounded-2xl
+                    p-5
+                    sm:p-6
+                    transition-all
+                    duration-300
+                    hover:-translate-y-1
+                    shadow-[0_8px_25px_rgba(0,0,0,0.8),_3px_3px_0px_#ff2a85]
+                    hover:shadow-[0_12px_35px_rgba(0,240,255,0.3),_4px_4px_0px_#00f0ff]
+                    block
+                  "
                 >
-                  {/* TITLE BAR */}
+                  {/* Top Ambient Line */}
                   <div
                     style={{
-                      background: `linear-gradient(to right, ${item.accentColor}, #fbcfe8 60%, #f4f4f6)`,
+                      backgroundImage: `linear-gradient(to right, transparent, ${channel.accentColor}, transparent)`,
                     }}
-                    className="px-3 py-1.5 border-b-2 border-[#1e1e2f] flex items-center justify-between select-none shrink-0"
-                  >
-                    <div className="flex items-center gap-2 truncate">
-                      <span className="text-[10px] text-[#25233A] leading-none">
-                        ■
-                      </span>
-                      <span className="font-bold text-xs uppercase text-[#25233A] tracking-wider truncate">
-                        {item.exeName}
-                      </span>
-                    </div>
-                    <WindowControls closeColor={item.accentColor} />
-                  </div>
+                    className="absolute inset-x-0 top-0 h-[2px] opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                  />
 
-                  {/* CARD BODY */}
-                  <div
-                    style={{ boxShadow: BEVEL_INSET }}
-                    className="m-1.5 p-4 sm:p-5 flex items-start gap-4 flex-1 bg-[#f4f4f6]"
-                  >
+                  {/* Shimmer Sweep */}
+                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
+
+                  <div className="flex items-start gap-4">
                     <div
                       style={{
-                        transform: "translateZ(45px)",
-                        transformStyle: "preserve-3d",
-                        boxShadow: `3px 3px 0px 0px ${item.accentColor}`,
+                        borderColor: channel.accentColor,
+                        boxShadow: `0 0 12px ${channel.accentColor}40`,
                       }}
-                      className="w-11 h-11 bg-[#f4f4f6] border-2 border-[#1e1e2f] flex items-center justify-center shrink-0 transition-transform duration-300"
+                      className="w-12 h-12 rounded-xl bg-black border flex items-center justify-center shrink-0 mt-0.5"
                     >
-                      <Icon
-                        className="w-5 h-5"
-                        style={{ color: item.accentColor }}
-                      />
+                      <Icon className="w-5 h-5" style={{ color: channel.accentColor }} />
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-sm text-[#25233A] uppercase tracking-wide">
-                        {item.title}
-                      </h3>
-
-                      <p className="font-mono text-[10px] sm:text-xs text-[#4B556B] mt-0.5 leading-tight">
-                        {item.line1}
+                      <h4 className={`text-xl sm:text-2xl font-pricedown tracking-tight text-white mb-0.5 group-hover:text-[#00f0ff] transition-colors ${pricedown.className}`}>
+                        {channel.title}
+                      </h4>
+                      <p className="text-xs text-gray-400 font-sans mb-1.5">
+                        {channel.subtitle}
                       </p>
-
-                      {item.id === "location" ? (
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group/loc mt-2.5 inline-flex flex-col cursor-pointer transition-all duration-200"
-                        >
-                          <span className="inline-flex items-center gap-1.5 font-mono text-xs sm:text-sm font-bold text-[#5A315D] transition-colors duration-200 group-hover/loc:text-[#FF3B8D] underline underline-offset-4 decoration-[#5A315D]/40 group-hover/loc:decoration-[#FF3B8D]">
-                            <MapPin className="h-3.5 w-3.5 shrink-0 text-[#FF3B8D] transition-transform duration-200 group-hover/loc:-translate-y-0.5" />
-                            <span>{item.value}</span>
-                            <span className="text-[11px] text-[#FF3B8D] opacity-80 transition-transform duration-200 group-hover/loc:translate-x-0.5 group-hover/loc:-translate-y-0.5">
-                              ↗
-                            </span>
-                          </span>
-                          <span className="mt-1 font-mono text-[10px] text-[#4B556B] group-hover/loc:text-[#FF3B8D] transition-colors duration-200">
-                            Click to view location on map
-                          </span>
-                        </a>
-                      ) : (
-                        <a
-                          href={item.href}
-                          className="mt-2 inline-block font-mono text-xs sm:text-sm font-bold break-all transition-colors underline underline-offset-4 cursor-pointer text-[#243B64] hover:text-[#FF3B8D] decoration-[#243B64]/40 hover:decoration-[#FF3B8D]"
-                        >
-                          {item.value}
-                        </a>
-                      )}
+                      <p className="text-sm font-mono font-bold text-white group-hover:text-[#ff2a85] transition-colors truncate">
+                        {channel.value}
+                      </p>
                     </div>
                   </div>
-                </TiltCard>
+                </motion.a>
               );
             })}
-          </motion.div>
+          </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

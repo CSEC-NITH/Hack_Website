@@ -8,30 +8,16 @@ import {
   Instagram,
   Twitter,
   Linkedin,
-  Sparkles,
   ChevronRight,
   CheckCircle2,
   Send,
   Heart,
   ArrowUpRight,
+  Sparkles,
 } from "lucide-react";
 import { FaDiscord } from "react-icons/fa";
 import { scrollToSection } from "@/lib/scroll-utils";
-import localFont from "next/font/local";
-
-/* ========================================================================
-   FONT
-   ======================================================================== */
-
-const Hacked_KerX = localFont({
-  src: "../../public/fonts/Hacked-KerX.ttf",
-  variable: "--custom-font",
-  fallback: ["monospace", "sans-serif"],
-});
-
-/* ========================================================================
-   FOOTER COMPONENT
-   ======================================================================== */
+import { pricedown } from "@/lib/fonts";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -106,87 +92,76 @@ export default function Footer() {
       href: "https://discord.com/invite/kneqCFxKHY",
       icon: FaDiscord,
       hoverClass:
-        "hover:text-[#5865F2] hover:border-[#5865F2]/40 hover:bg-[#5865F2]/10 hover:shadow-[0_0_15px_rgba(88,101,242,0.3)]",
+        "hover:text-[#5865F2] hover:border-[#5865F2]/50 hover:bg-[#5865F2]/10 hover:shadow-[0_0_15px_rgba(88,101,242,0.4)]",
     },
     {
       label: "Instagram",
       href: "https://www.instagram.com/csec_nith/",
       icon: Instagram,
       hoverClass:
-        "hover:text-[#ff2a85] hover:border-[#ff2a85]/40 hover:bg-[#ff2a85]/10 hover:shadow-[0_0_15px_rgba(255,42,133,0.3)]",
+        "hover:text-[#ff2a85] hover:border-[#ff2a85]/50 hover:bg-[#ff2a85]/10 hover:shadow-[0_0_15px_rgba(255,42,133,0.4)]",
     },
     {
       label: "Twitter / X",
       href: "https://x.com/csec_nith?t=Ubyv6_7SLUkdaxtBS8MUew&s=09",
       icon: Twitter,
       hoverClass:
-        "hover:text-[#00f0ff] hover:border-[#00f0ff]/40 hover:bg-[#00f0ff]/10 hover:shadow-[0_0_15px_rgba(0,240,255,0.3)]",
+        "hover:text-[#00f0ff] hover:border-[#00f0ff]/50 hover:bg-[#00f0ff]/10 hover:shadow-[0_0_15px_rgba(0,240,255,0.4)]",
     },
     {
       label: "LinkedIn",
       href: "https://www.linkedin.com/company/nith-csec/",
       icon: Linkedin,
       hoverClass:
-        "hover:text-[#0077b5] hover:border-[#0077b5]/40 hover:bg-[#0077b5]/10 hover:shadow-[0_0_15px_rgba(0,119,181,0.3)]",
+        "hover:text-[#0077b5] hover:border-[#0077b5]/50 hover:bg-[#0077b5]/10 hover:shadow-[0_0_15px_rgba(0,119,181,0.4)]",
     },
   ];
 
   return (
-    <footer className="relative w-full border-t border-white/10 bg-gradient-to-b from-[#0b081a]/40 via-[#0d0722]/75 to-[#0b051b]/95 backdrop-blur-md text-white font-sans overflow-hidden">
-      {/* Decorative Ambient Background Glows */}
-      <div className="pointer-events-none absolute -bottom-20 left-1/4 -z-10 h-64 w-64 rounded-full bg-[#ff2a85]/10 blur-[100px]" />
-      <div className="pointer-events-none absolute -bottom-20 right-1/4 -z-10 h-64 w-64 rounded-full bg-[#00f0ff]/10 blur-[100px]" />
-      <div className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 -z-10 h-40 w-80 rounded-full bg-[#7928ca]/10 blur-[90px]" />
-
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-14 pb-8">
+    <footer className="relative w-full border-t border-white/15 bg-black text-white select-none overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         {/* 4 Column Main Grid */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8 pb-12">
           {/* Col 1: CSEC Brand & Description */}
-          <div className="lg:col-span-4 flex flex-col justify-between space-y-5">
+          <div className="lg:col-span-4 flex flex-col justify-between space-y-6">
             <div>
-              {/* Brand Logo & Name */}
+              {/* Brand Logo & Name in Pricedown */}
               <div className="flex items-center gap-3">
                 <Link
                   href="https://csec.nith.ac.in/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black/80 border border-white/15 p-1.5 transition-all duration-300 hover:scale-105 hover:border-[#ff2a85]/50 hover:shadow-[0_0_15px_rgba(255,42,133,0.3)]"
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0c0517] border border-white/20 p-2 transition-all duration-300 hover:scale-105 hover:border-[#ff2a85] hover:shadow-[0_0_15px_rgba(255,42,133,0.5)]"
                 >
                   <Image
                     src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/csec-RitzmBrgdmOMfzaijUqHFSmOVA4LzO.png"
                     alt="CSEC Logo"
-                    width={34}
-                    height={34}
+                    width={36}
+                    height={36}
                     className="h-full w-full object-contain"
                   />
                 </Link>
 
-                <div className="flex items-baseline gap-2">
-                  <span
-                    className={`text-2xl font-black tracking-wider text-white ${Hacked_KerX.className}`}
+                <div>
+                  <h3
+                    className={`text-3xl font-pricedown tracking-tight text-white ${pricedown.className} [-webkit-text-stroke:1px_#000000] drop-shadow-[2px_2px_0px_rgba(0,0,0,0.9)]`}
                   >
-                    HACK{" "}
-                    <span className="bg-gradient-to-r from-[#ff2a85] via-[#b967ff] to-[#00f0ff] bg-clip-text text-transparent">
-                      6.0
-                    </span>
-                  </span>
+                    HACK <span className="text-[#ff2a85]">6.0</span>
+                  </h3>
+                  <p className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[#00f0ff]">
+                    CSEC <span className="text-white/30">•</span> NIT HAMIRPUR
+                  </p>
                 </div>
               </div>
 
-              {/* Subtitle / Department */}
-              <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-[#00f0ff]">
-                CSEC <span className="text-white/30">•</span> NIT HAMIRPUR
-              </p>
-
               {/* Description */}
-              <p className="mt-3 max-w-sm text-sm leading-relaxed text-zinc-300/90">
-                Empowering student innovation through code, creativity, and
-                collaboration in the hills of Himachal.
+              <p className="mt-4 max-w-sm text-sm leading-relaxed text-gray-400 font-sans">
+                Empowering student innovation through code, creativity, and collaboration in the hills of Himachal Pradesh.
               </p>
             </div>
 
             {/* Social Icons */}
-            <div className="flex items-center gap-2.5 pt-2">
+            <div className="flex items-center gap-3 pt-2">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
@@ -196,7 +171,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     title={social.label}
-                    className={`flex h-9 w-9 items-center justify-center rounded-xl bg-white/[0.04] border border-white/10 text-zinc-300 transition-all duration-200 ${social.hoverClass}`}
+                    className={`flex h-10 w-10 items-center justify-center rounded-xl bg-[#0c0517] border border-white/15 text-gray-300 transition-all duration-200 ${social.hoverClass}`}
                   >
                     <Icon className="h-4 w-4" />
                   </a>
@@ -207,20 +182,22 @@ export default function Footer() {
 
           {/* Col 2: Quick Links */}
           <div className="lg:col-span-2 sm:col-span-1 space-y-4">
-            <h4 className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wider text-white">
+            <h4
+              className={`flex items-center gap-2 text-xl font-pricedown tracking-wider text-white ${pricedown.className}`}
+            >
               <Sparkles className="h-4 w-4 text-[#ff2a85] shrink-0" />
-              <span>Quick Links</span>
+              <span>QUICK LINKS</span>
             </h4>
 
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2.5 text-sm font-sans">
               {quickLinks.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
                     onClick={(e) => handleLinkClick(e, link.href)}
-                    className="group inline-flex items-center gap-1.5 text-zinc-300/90 transition-all duration-200 hover:text-white hover:translate-x-1"
+                    className="group inline-flex items-center gap-1.5 text-gray-400 transition-all duration-200 hover:text-white hover:translate-x-1"
                   >
-                    <ChevronRight className="h-3.5 w-3.5 text-zinc-500 transition-colors duration-200 group-hover:text-[#ff2a85]" />
+                    <ChevronRight className="h-3.5 w-3.5 text-gray-600 transition-colors duration-200 group-hover:text-[#ff2a85]" />
                     <span>{link.label}</span>
                   </a>
                 </li>
@@ -230,12 +207,14 @@ export default function Footer() {
 
           {/* Col 3: Resources */}
           <div className="lg:col-span-3 sm:col-span-1 space-y-4">
-            <h4 className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wider text-white">
+            <h4
+              className={`flex items-center gap-2 text-xl font-pricedown tracking-wider text-white ${pricedown.className}`}
+            >
               <Sparkles className="h-4 w-4 text-[#00f0ff] shrink-0" />
-              <span>Resources</span>
+              <span>RESOURCES</span>
             </h4>
 
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2.5 text-sm font-sans">
               {resourceLinks.map((item) => (
                 <li key={item.label}>
                   <a
@@ -247,9 +226,9 @@ export default function Footer() {
                         handleLinkClick(e, item.href);
                       }
                     }}
-                    className="group inline-flex items-center gap-1.5 text-zinc-300/90 transition-all duration-200 hover:text-white hover:translate-x-1"
+                    className="group inline-flex items-center gap-1.5 text-gray-400 transition-all duration-200 hover:text-white hover:translate-x-1"
                   >
-                    <ChevronRight className="h-3.5 w-3.5 text-zinc-500 transition-colors duration-200 group-hover:text-[#00f0ff]" />
+                    <ChevronRight className="h-3.5 w-3.5 text-gray-600 transition-colors duration-200 group-hover:text-[#00f0ff]" />
                     <span className="truncate">{item.label}</span>
                     {item.isExternal && (
                       <ArrowUpRight className="h-3.5 w-3.5 opacity-40 transition-opacity duration-200 group-hover:opacity-100 group-hover:text-[#00f0ff]" />
@@ -262,13 +241,14 @@ export default function Footer() {
 
           {/* Col 4: Stay Updated */}
           <div className="lg:col-span-3 space-y-4">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-white">
-              Stay Updated
+            <h4
+              className={`text-xl font-pricedown tracking-wider text-white ${pricedown.className}`}
+            >
+              STAY UPDATED
             </h4>
 
-            <p className="text-sm leading-relaxed text-zinc-300/90">
-              Subscribe to the HACK 6.0 newsletter for updates, schedule
-              releases, and announcements.
+            <p className="text-xs sm:text-sm leading-relaxed text-gray-400 font-sans">
+              Subscribe to the HACK 6.0 newsletter for updates, schedule releases, and announcements.
             </p>
 
             <form onSubmit={handleSubscribe} className="space-y-2.5 pt-1">
@@ -278,54 +258,58 @@ export default function Footer() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl bg-white/[0.04] border border-white/10 px-4 py-2.5 text-sm text-white placeholder-zinc-500 outline-none transition-all duration-200 focus:border-[#ff2a85]/70 focus:bg-white/[0.08] focus:ring-1 focus:ring-[#ff2a85]/40"
+                className="w-full rounded-xl bg-[#0c0517] border border-white/15 px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-all duration-200 focus:border-[#ff2a85] focus:shadow-[0_0_15px_rgba(255,42,133,0.3)] font-sans"
               />
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ff2a85] via-[#b967ff] to-[#7928ca] py-2.5 text-sm font-bold uppercase tracking-wider text-white shadow-md shadow-pink-500/20 transition-all duration-200 hover:brightness-110 hover:shadow-pink-500/35 active:scale-[0.99] disabled:opacity-60"
+                className="
+                  relative group overflow-hidden
+                  flex w-full cursor-pointer items-center justify-center gap-2
+                  rounded-xl
+                  bg-gradient-to-r from-[#ff2a85] via-[#ff007f] to-[#7928ca]
+                  py-3
+                  text-lg font-pricedown uppercase tracking-wider text-white
+                  border border-[#ff75c3]/60
+                  shadow-[0_0_15px_rgba(255,42,133,0.4),_2px_2px_0px_#00f0ff]
+                  hover:shadow-[0_0_25px_rgba(255,42,133,0.7),_3px_3px_0px_#00f0ff]
+                  hover:-translate-y-0.5
+                  active:translate-y-0.5
+                  transition-all duration-200
+                  disabled:opacity-60
+                  select-none
+                "
               >
+                {/* Shimmer sweep */}
+                <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
+
                 {isSubmitting ? (
                   <>
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    <span>Subscribing...</span>
+                    <span>SUBSCRIBING...</span>
                   </>
                 ) : (
                   <>
-                    <Send className="h-3.5 w-3.5" />
-                    <span>Subscribe</span>
+                    <Send className="h-4 w-4 text-[#00f0ff]" />
+                    <span>SUBSCRIBE</span>
                   </>
                 )}
               </button>
             </form>
 
             {isSubscribed && (
-              <div className="mt-2 flex items-center gap-1.5 text-xs font-medium text-emerald-400">
+              <div className="mt-2 flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-400">
                 <CheckCircle2 size={14} className="shrink-0 text-emerald-400" />
-                <span>Thank you! You're subscribed.</span>
+                <span>THANK YOU! TRANSMISSION RECEIVED.</span>
               </div>
             )}
           </div>
         </div>
 
         {/* Bottom Horizontal Rule & Copyright */}
-        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-zinc-400">
+        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-gray-500 font-sans">
           <p>© 2026 CSEC, NIT Hamirpur. All rights reserved.</p>
-
-          <p className="flex items-center gap-1.5 font-medium text-zinc-300">
-            <span>Designed with</span>
-            <Heart className="h-3.5 w-3.5 fill-[#ff2a85] text-[#ff2a85]" />
-            <span>by the</span>
-            <Link
-              href="https://csec.nith.ac.in/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-bold text-white transition-colors duration-200 hover:text-[#00f0ff] hover:underline"
-            >
-              HACK 6.0 Team
-            </Link>
-          </p>
         </div>
       </div>
     </footer>
