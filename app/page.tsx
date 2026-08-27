@@ -5,6 +5,7 @@ import TimelineSection from "./componenets/timeline";
 import PrizeSection from "./componenets/prizes";
 import JudgesSection from "./componenets/judges";
 import SponsorsSection from "./componenets/sponsors";
+import CyberBlade3DSection from "./componenets/cyber-blade-3d";
 import FaqSection from "./componenets/faq";
 import OrganizersSection from "./componenets/organizers";
 import TeamSection from "./componenets/team";
@@ -22,6 +23,7 @@ export default function Home() {
         <PrizeSection />
         <SponsorsSection />
         <JudgesSection />
+        <CyberBlade3DSection />
         <FaqSection />
         <OrganizersSection />
         <TeamSection />
