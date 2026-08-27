@@ -4,7 +4,6 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { scrollToSection } from "@/lib/scroll-utils";
@@ -53,9 +52,10 @@ export default function Navbar() {
   const [showHackText, setShowHackText] = useState(false);
 
   useEffect(() => {
-    const handleTerminalTabChange = (e: any) => {
-      if (e.detail?.isOpen && e.detail?.tab) {
-        setActiveTerminalTab(e.detail.tab);
+    const handleTerminalTabChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ isOpen?: boolean; tab?: string }>;
+      if (customEvent.detail?.isOpen && customEvent.detail?.tab) {
+        setActiveTerminalTab(customEvent.detail.tab);
       } else {
         setActiveTerminalTab(null);
       }
@@ -287,15 +287,14 @@ export default function Navbar() {
           </div>
 
           <div className="lg:hidden">
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
+              type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="text-white hover:text-[#ff2a85] hover:bg-[#ff2a85]/10"
+              className="inline-flex items-center justify-center h-10 w-10 rounded-md text-white hover:text-[#ff2a85] hover:bg-[#ff2a85]/10 transition-colors focus:outline-none"
               aria-label="Toggle menu"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </Button>
+            </button>
           </div>
         </div>
       </div>

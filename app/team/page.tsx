@@ -520,7 +520,7 @@ export default function Team() {
                 CSEC // NITH
               </span>
                 <span className="font-mono text-[9px] text-[#8a2be2] font-semibold tracking-wide hidden sm:block">
-                COMPUTER SCIENCE ENGINEERS' COMMUNITY
+                COMPUTER SCIENCE ENGINEERS&apos; COMMUNITY
               </span>
               </div>
             </div>
