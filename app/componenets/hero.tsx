@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { motion, type Variants } from "framer-motion"
 import { useGlitch } from "react-powerglitch"
 import { pricedown, signatur } from "../../lib/fonts"
 
@@ -68,7 +68,7 @@ export default function HeroSection() {
     return () => clearInterval(timer)
   }, [])
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -79,7 +79,7 @@ export default function HeroSection() {
     },
   }
 
-  const item = {
+  const item: Variants = {
     hidden: { y: 20, opacity: 0 },
     show: {
       y: 0,

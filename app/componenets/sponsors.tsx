@@ -6,6 +6,7 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
+  type Variants,
 } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import localFont from "next/font/local";
@@ -235,12 +236,12 @@ function TierLabel({
 export default function SponsorsSection() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.08 });
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
   };
 
-  const item = {
+  const item: Variants = {
     hidden: { y: 40, opacity: 0, filter: "blur(10px)" },
     visible: { y: 0, opacity: 1, filter: "blur(0px)", transition: { duration: 0.8, ease: "easeOut" } },
   };

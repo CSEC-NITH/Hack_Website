@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import localFont from "next/font/local";
 
 const Hacked_KerX = localFont({
@@ -144,7 +144,7 @@ const teamData: TeamGroup[] = [
     },
 ];
 
-const crtBootVariants = {
+const crtBootVariants: Variants = {
     hidden: {
         scaleY: 0.005,
         scaleX: 0,
@@ -165,7 +165,7 @@ const crtBootVariants = {
             duration: 0.55,
             delay: customIndex * 0.08,
             times: [0, 0.25, 0.7, 1],
-            ease: [0.22, 1, 0.36, 1],
+            ease: [0.22, 1, 0.36, 1] as const,
         },
     }),
 };

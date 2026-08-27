@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, type Variants } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import localFont from "next/font/local";
 
@@ -300,7 +300,7 @@ export default function FaqSection() {
         threshold: 0.08,
     });
 
-    const container = {
+    const container: Variants = {
         hidden: {
             opacity: 0,
         },
@@ -313,7 +313,7 @@ export default function FaqSection() {
         },
     };
 
-    const item = {
+    const item: Variants = {
         hidden: {
             opacity: 0,
             y: 20,
