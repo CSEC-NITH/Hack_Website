@@ -2,11 +2,30 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Script from "next/script";
+import Image from "next/image";
+import { pricedown } from "@/lib/fonts";
+import CyberTerminalModal, { TerminalTab } from "./cyber-terminal-modal";
+
+const FOLDERS: { name: string; tab: TerminalTab; href: string }[] = [
+  { name: "judges", tab: "judges", href: "#judges" },
+  { name: "faq", tab: "faq", href: "#faq" },
+  { name: "team", tab: "team", href: "#team" },
+];
 
 export default function CyberBlade3DSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const modelRef = useRef<any>(null);
+
+  // Cyber Terminal Window Modal state
+  const [terminalOpen, setTerminalOpen] = useState(false);
+  const [activeTerminalTab, setActiveTerminalTab] = useState<TerminalTab>("judges");
+
+  const handleFolderClick = (e: React.MouseEvent, tab: TerminalTab) => {
+    e.preventDefault();
+    setActiveTerminalTab(tab);
+    setTerminalOpen(true);
+  };
 
   useEffect(() => {
     let animationFrameId: number;
@@ -49,9 +68,10 @@ export default function CyberBlade3DSection() {
         controls = new (THREE as any).OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        controls.enableZoom = true;
-        controls.maxDistance = 8;
-        controls.minDistance = 1.5;
+        // Disable zoom so mouse scroll passes through to scroll the page
+        controls.enableZoom = false;
+        controls.enableRotate = true;
+        controls.enablePan = false;
       }
 
       // 5. LIGHTING (Cyberpunk Neon Stage Lights)
@@ -91,7 +111,7 @@ export default function CyberBlade3DSection() {
           const size = box.getSize(new THREE.Vector3());
 
           const maxDim = Math.max(size.x, size.y, size.z);
-          const scale = 2.8 / maxDim;
+          const scale = 1.95 / maxDim;
           model.scale.set(scale, scale, scale);
 
           // Center the pivot
@@ -116,7 +136,7 @@ export default function CyberBlade3DSection() {
             const center = box.getCenter(new THREE.Vector3());
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
-            const scale = 2.8 / maxDim;
+            const scale = 1.95 / maxDim;
             model.scale.set(scale, scale, scale);
             model.position.x = -center.x * scale;
             model.position.y = -center.y * scale;
@@ -182,7 +202,20 @@ export default function CyberBlade3DSection() {
   }, []);
 
   return (
-    <section id="cyber-blade" className="relative py-16 px-4 sm:px-6 md:px-8 bg-transparent select-none flex items-center justify-center">
+    <section id="cyber-blade" className="relative w-full py-16 px-4 sm:px-6 md:px-8 bg-transparent select-none flex items-center justify-center overflow-hidden min-h-[480px] sm:min-h-[560px] md:min-h-[640px]">
+      {/* Retro Dithered Cloud Computer Desktop Wallpaper with Pink & Purple Glow Overlay */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]">
+        {/* Dithered Clouds Wallpaper */}
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity scale-105"
+          style={{ backgroundImage: "url('/retro-clouds.jpg')" }}
+        />
+        {/* Pink & Purple Vaporwave Color Wash Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#ff2a85]/40 via-[#8b5cf6]/35 to-[#150228]/60 mix-blend-color-dodge" />
+        {/* Subtle Vignette Ambient Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#04010a_90%)]" />
+      </div>
+
       {/* Load Three.js, GLTFLoader, and OrbitControls directly */}
       <Script
         src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
@@ -197,18 +230,40 @@ export default function CyberBlade3DSection() {
         strategy="afterInteractive"
       />
 
-      {/* Centered Bounded Enclosure Box */}
-      <div className="relative w-full max-w-4xl h-[450px] sm:h-[550px] md:h-[620px] rounded-3xl bg-[#0c0517]/85 backdrop-blur-xl border border-white/15 shadow-[0_15px_50px_rgba(0,0,0,0.9)] overflow-hidden flex items-center justify-center group hover:border-[#ff2a85]/40 transition-colors duration-500">
-        
-        {/* Subtle Radial Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,42,133,0.15)_0%,transparent_70%)] pointer-events-none" />
+      {/* Left Column Minimalist Modern Frosted Glass Folder Card */}
+      <div className="absolute left-4 sm:left-8 md:left-12 lg:left-20 top-1/2 -translate-y-1/2 z-20 p-4 sm:p-5 md:p-6 bg-[#0c0416]/75 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-[0_15px_45px_rgba(0,0,0,0.7),_0_0_30px_rgba(255,42,133,0.15)] flex flex-col gap-6 sm:gap-7 md:gap-8 items-center transition-all duration-300 hover:border-[#ff2a85]/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.8),_0_0_35px_rgba(255,42,133,0.25)]">
+        {FOLDERS.map((folder) => (
+          <button
+            key={folder.name}
+            onClick={(e) => handleFolderClick(e, folder.tab)}
+            className="group relative flex flex-col items-center gap-2 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:scale-110 active:scale-95 bg-transparent border-0 outline-none"
+          >
+            {/* Neon Pink/Purple Glow Aura */}
+            <div className="absolute -inset-2 bg-gradient-to-tr from-[#ff2a85] via-[#a855f7] to-[#ec4899] rounded-2xl opacity-0 group-hover:opacity-50 blur-xl transition-all duration-500 pointer-events-none" />
 
-        {/* Ambient Corner Accents */}
-        <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[#00f0ff]/50 pointer-events-none" />
-        <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-[#ff2a85]/50 pointer-events-none" />
-        <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-[#ff2a85]/50 pointer-events-none" />
-        <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#00f0ff]/50 pointer-events-none" />
+            {/* Folder Graphic */}
+            <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 drop-shadow-[0_4px_12px_rgba(168,85,247,0.3)] group-hover:drop-shadow-[0_0_24px_rgba(255,42,133,0.85)] transition-all duration-300">
+              <Image
+                src="/monitor/CSEC (8).svg"
+                alt={`${folder.name} folder`}
+                fill
+                className="object-contain transition-transform duration-300 group-hover:rotate-2"
+                priority
+              />
+            </div>
 
+            {/* GTA Pricedown Label */}
+            <span
+              className={`font-pricedown text-sm sm:text-base md:text-lg tracking-wider text-white/90 group-hover:text-[#ff2a85] uppercase transition-colors duration-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] ${pricedown.className}`}
+            >
+              {folder.name}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* 3D Element Container */}
+      <div className="relative w-full max-w-4xl h-[450px] sm:h-[550px] md:h-[620px] flex items-center justify-center">
         {/* Loading Spinner */}
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center gap-3 text-[#00f0ff] z-20 pointer-events-none">
@@ -222,6 +277,13 @@ export default function CyberBlade3DSection() {
           className="w-full h-full cursor-grab active:cursor-grabbing relative z-10"
         />
       </div>
+
+      {/* Cyberpunk Vaporwave Terminal Window Modal System */}
+      <CyberTerminalModal
+        isOpen={terminalOpen}
+        initialTab={activeTerminalTab}
+        onClose={() => setTerminalOpen(false)}
+      />
     </section>
   );
 }

@@ -22,11 +22,11 @@ export default function Home() {
         <TimelineSection />
         <PrizeSection />
         <SponsorsSection />
-        <JudgesSection />
+        {/* <JudgesSection /> */}
         <CyberBlade3DSection />
-        <FaqSection />
-        <OrganizersSection />
-        <TeamSection />
+        {/* <FaqSection /> */}
+        {/* <OrganizersSection />
+        <TeamSection /> */}
         <ContactSection />
         <Footer />
       </div>
