@@ -7,7 +7,6 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { scrollToSection } from "@/lib/scroll-utils";
-import { useGlitch } from "react-powerglitch";
 import Link from "next/link";
 
 const navLinks: {
@@ -38,13 +37,6 @@ const SECTIONS_ORDER = [
 ];
 
 export default function Navbar() {
-  const glitch = useGlitch({
-    timing: {
-      duration: 3950,
-    },
-    shake: false,
-  });
-
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
@@ -120,34 +112,31 @@ export default function Navbar() {
     terminalTab?: "judges" | "faq" | "team",
     sectionId?: string
   ) => {
+    e.preventDefault();
+    setIsOpen(false);
+
     if (href === "#home" || sectionId === "home") {
-      e.preventDefault();
       setActiveSection("home");
       setActiveTerminalTab(null);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      setIsOpen(false);
+      scrollToSection("home");
       return;
     }
 
     if (terminalTab) {
-      e.preventDefault();
       setActiveSection("cyber-blade");
       setActiveTerminalTab(terminalTab);
       scrollToSection("cyber-blade");
       window.dispatchEvent(
         new CustomEvent("open-cyber-terminal", { detail: { tab: terminalTab } })
       );
-      setIsOpen(false);
       return;
     }
 
     if (href.startsWith("#")) {
-      e.preventDefault();
       const targetId = sectionId || href.substring(1);
       setActiveSection(targetId);
       setActiveTerminalTab(null);
       scrollToSection(targetId);
-      setIsOpen(false);
     }
   };
 

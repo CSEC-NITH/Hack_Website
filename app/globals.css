@@ -434,7 +434,7 @@ section {
   width: 520px;
   height: 520px;
   border-radius: 50%;
-  filter: blur(115px);
+  filter: blur(35px);
   will-change: transform;
 }
 
@@ -777,64 +777,40 @@ section {
    MOBILE
    ======================================================================== */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .hack-particles,
+  .hack-geometry,
+  .hack-scanlines {
+    display: none !important;
+  }
+
   .hack-grid-main {
-    opacity: 0.23;
-    animation-duration: 55s;
+    opacity: 0.15;
+    animation: none !important;
   }
 
   .hack-grid-depth {
-    opacity: 0.055;
-    animation-duration: 90s;
+    display: none !important;
   }
 
   .hack-atmosphere {
-    animation-duration: 90s;
+    animation: none !important;
   }
 
   .hack-violet-haze {
-    animation-duration: 100s;
+    animation: none !important;
   }
 
-  .hack-glow-cyan {
-    animation-duration: 70s;
-  }
-
-  .hack-glow-pink {
-    animation-duration: 78s;
-  }
-
+  .hack-glow-cyan,
+  .hack-glow-pink,
   .hack-glow-purple {
     animation-duration: 90s;
+    filter: blur(25px);
   }
 
   .hack-haze {
-    animation-duration: 28s;
-  }
-
-  .hack-scanlines {
-    animation-duration: 32s;
-    opacity: 0.035;
-  }
-
-  .hack-particle {
-    animation-duration: 100s;
-  }
-
-  .hack-geometry {
-    opacity: 0.14;
-  }
-
-  .hack-geometry-one {
-    animation-duration: 75s;
-  }
-
-  .hack-geometry-two {
-    animation-duration: 90s;
-  }
-
-  .hack-geometry-three {
-    animation-duration: 70s;
+    animation: none !important;
+    opacity: 0.1;
   }
 }
 

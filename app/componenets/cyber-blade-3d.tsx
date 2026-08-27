@@ -185,8 +185,25 @@ export default function CyberBlade3DSection() {
 
       window.addEventListener("resize", handleResize);
 
+      let isVisible = true;
+      let observer: IntersectionObserver | null = null;
+      if (typeof IntersectionObserver !== "undefined" && containerRef.current) {
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              isVisible = entry.isIntersecting;
+            });
+          },
+          { threshold: 0.05 }
+        );
+        observer.observe(containerRef.current);
+      }
+
       const animate = () => {
         animationFrameId = requestAnimationFrame(animate);
+
+        // Save GPU and CPU cycles when section is not visible
+        if (!isVisible) return;
 
         if (modelRef.current) {
           modelRef.current.rotation.y += 0.008;

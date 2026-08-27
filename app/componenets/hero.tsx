@@ -94,17 +94,15 @@ export default function HeroSection() {
   return (
     <section id="home" className="sticky top-0 select-none overflow-hidden bg-[#0e0419] min-h-screen h-screen z-0">
       <div className="absolute inset-0 w-full h-full min-h-screen z-0">
-        <img
-          src="/hero/hack6.0%20banner.svg"
-          alt="Hack 6.0 Banner"
-          className="hidden md:block w-full h-full min-h-screen object-cover object-center"
-        />
-
-        <img
-          src="/hero/CSEC.svg"
-          alt="CSEC Banner"
-          className="block md:hidden w-full h-[50vh] min-h-screen object-cover object-center"
-        />
+        <picture className="w-full h-full min-h-screen">
+          <source media="(min-width: 768px)" srcSet="/hero/hack6.0%20banner.svg" />
+          <img
+            src="/hero/CSEC.svg"
+            alt="Hack 6.0 Banner"
+            className="w-full h-full min-h-screen object-cover object-center"
+            fetchPriority="high"
+          />
+        </picture>
       </div>
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-[#0e0419]/40 to-[#0e0419] z-10 pointer-events-none" />
