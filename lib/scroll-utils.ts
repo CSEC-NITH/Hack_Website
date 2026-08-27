@@ -1,8 +1,3 @@
-/**
- * Utility function to handle smooth scrolling to sections
- * Accounts for the fixed navbar height
- */
-
 declare global {
   interface Window {
     scrollToSection: (sectionId: string) => void;
@@ -10,25 +5,31 @@ declare global {
 }
 
 export function scrollToSection(sectionId: string) {
+  if (sectionId === "home" || sectionId === "") {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    return;
+  }
+
   setTimeout(() => {
     const section = document.getElementById(sectionId);
     if (!section) return;
 
-    const navbar = document.querySelector("nav");
-    const navbarHeight = navbar ? navbar.offsetHeight : 0;
+    const navbar = document.querySelector("header") || document.querySelector("nav");
+    const navbarHeight = navbar ? (navbar as HTMLElement).offsetHeight : 70;
 
-    const offsetPosition = section.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 20;
-
-    console.log("Scrolling to position:", offsetPosition);
+    const offsetPosition =
+      section.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 15;
 
     window.scrollTo({
-      top: offsetPosition + 250,
+      top: Math.max(0, offsetPosition),
       behavior: "smooth",
     });
-  }, 100);
+  }, 50);
 }
 
-{/* Attachs window to client side only */}
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   window.scrollToSection = scrollToSection;
 }

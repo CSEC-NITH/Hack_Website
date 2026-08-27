@@ -20,10 +20,47 @@ export default function CyberBlade3DSection() {
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [activeTerminalTab, setActiveTerminalTab] = useState<TerminalTab>("judges");
 
+  useEffect(() => {
+    const handleOpenTerminal = (e: any) => {
+      if (e.detail?.tab) {
+        setActiveTerminalTab(e.detail.tab);
+        setTerminalOpen(true);
+        window.dispatchEvent(
+          new CustomEvent("cyber-terminal-tab-change", {
+            detail: { tab: e.detail.tab, isOpen: true },
+          })
+        );
+      }
+    };
+
+    window.addEventListener("open-cyber-terminal", handleOpenTerminal);
+    return () => {
+      window.removeEventListener("open-cyber-terminal", handleOpenTerminal);
+    };
+  }, []);
+
   const handleFolderClick = (e: React.MouseEvent, tab: TerminalTab) => {
     e.preventDefault();
     setActiveTerminalTab(tab);
     setTerminalOpen(true);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("cyber-terminal-tab-change", {
+          detail: { tab, isOpen: true },
+        })
+      );
+    }
+  };
+
+  const handleTerminalClose = () => {
+    setTerminalOpen(false);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("cyber-terminal-tab-change", {
+          detail: { tab: null, isOpen: false },
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -260,7 +297,7 @@ export default function CyberBlade3DSection() {
       <CyberTerminalModal
         isOpen={terminalOpen}
         initialTab={activeTerminalTab}
-        onClose={() => setTerminalOpen(false)}
+        onClose={handleTerminalClose}
       />
     </section>
   );

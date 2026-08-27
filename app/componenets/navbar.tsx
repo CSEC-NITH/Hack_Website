@@ -11,16 +11,31 @@ import { scrollToSection } from "@/lib/scroll-utils";
 import { useGlitch } from "react-powerglitch";
 import Link from "next/link";
 
-const navLinks = [
-  { name: "Home", href: "#home" },
-  { name: "About", href: "#about" },
-  { name: "Timeline", href: "#timeline" },
-  { name: "Prizes", href: "#prizes" },
-  { name: "Judges", href: "#judges" },
-  { name: "Sponsors", href: "#sponsors" },
-  { name: "FAQ", href: "#faq" },
-  { name: "Organizers", href: "#team-section" },
-  { name: "Contact", href: "#contact" },
+const navLinks: {
+  name: string;
+  href: string;
+  sectionId: string;
+  terminalTab?: "judges" | "faq" | "team";
+}[] = [
+  { name: "Home", href: "#home", sectionId: "home" },
+  { name: "About", href: "#about", sectionId: "about" },
+  { name: "Timeline", href: "#timeline", sectionId: "timeline" },
+  { name: "Prizes", href: "#prizes", sectionId: "prizes" },
+  { name: "Sponsors", href: "#sponsors", sectionId: "sponsors" },
+  { name: "Judges", href: "#cyber-blade", sectionId: "cyber-blade", terminalTab: "judges" },
+  { name: "FAQ", href: "#cyber-blade", sectionId: "cyber-blade", terminalTab: "faq" },
+  { name: "Organizers", href: "#cyber-blade", sectionId: "cyber-blade", terminalTab: "team" },
+  { name: "Contact", href: "#contact", sectionId: "contact" },
+];
+
+const SECTIONS_ORDER = [
+  "home",
+  "about",
+  "timeline",
+  "prizes",
+  "sponsors",
+  "cyber-blade",
+  "contact",
 ];
 
 export default function Navbar() {
@@ -34,44 +49,104 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [activeTerminalTab, setActiveTerminalTab] = useState<string | null>(null);
   const [showHackText, setShowHackText] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      setScrolled(isScrolled);
-
-      const heroSection = document.getElementById("home");
-      if (heroSection) {
-        const heroHeight = heroSection.offsetHeight;
-        setShowHackText(window.scrollY > heroHeight * 0.5);
-      }
-
-      const hashLinks = navLinks
-        .filter((link) => link.href.startsWith("#"))
-        .map((link) => link.href.substring(1));
-
-      const sections = hashLinks.map((id) => document.getElementById(id));
-      const scrollPosition = window.scrollY + 100;
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        if (section && section.offsetTop <= scrollPosition) {
-          setActiveSection(hashLinks[i]);
-          break;
-        }
+    const handleTerminalTabChange = (e: any) => {
+      if (e.detail?.isOpen && e.detail?.tab) {
+        setActiveTerminalTab(e.detail.tab);
+      } else {
+        setActiveTerminalTab(null);
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("cyber-terminal-tab-change", handleTerminalTabChange);
+    return () => {
+      window.removeEventListener("cyber-terminal-tab-change", handleTerminalTabChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 15);
+
+      const heroEl = document.getElementById("home");
+      const heroHeight = heroEl ? heroEl.offsetHeight : window.innerHeight;
+
+      // 1. Top of page is strictly HOME
+      if (scrollY < heroHeight * 0.4) {
+        setActiveSection("home");
+        setShowHackText(false);
+        return;
+      }
+      setShowHackText(true);
+
+      // 2. Check sections using bounding client rects (top-down in reverse order)
+      const sections = [
+        "contact",
+        "cyber-blade",
+        "sponsors",
+        "prizes",
+        "timeline",
+        "about",
+      ];
+
+      const triggerLine = window.innerHeight * 0.4;
+
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= triggerLine && rect.bottom > 80) {
+            setActiveSection(id);
+            return;
+          }
+        }
+      }
+
+      setActiveSection("about");
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+    terminalTab?: "judges" | "faq" | "team",
+    sectionId?: string
+  ) => {
+    if (href === "#home" || sectionId === "home") {
+      e.preventDefault();
+      setActiveSection("home");
+      setActiveTerminalTab(null);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setIsOpen(false);
+      return;
+    }
+
+    if (terminalTab) {
+      e.preventDefault();
+      setActiveSection("cyber-blade");
+      setActiveTerminalTab(terminalTab);
+      scrollToSection("cyber-blade");
+      window.dispatchEvent(
+        new CustomEvent("open-cyber-terminal", { detail: { tab: terminalTab } })
+      );
+      setIsOpen(false);
+      return;
+    }
+
     if (href.startsWith("#")) {
       e.preventDefault();
-      const sectionId = href.substring(1);
-      scrollToSection(sectionId);
+      const targetId = sectionId || href.substring(1);
+      setActiveSection(targetId);
+      setActiveTerminalTab(null);
+      scrollToSection(targetId);
       setIsOpen(false);
     }
   };
@@ -154,15 +229,16 @@ export default function Navbar() {
 
           <nav className="hidden lg:flex items-center gap-1.5 xl:gap-3">
             {navLinks.map((link) => {
-              const isActive =
-                link.href.startsWith("#") &&
-                activeSection === link.href.substring(1);
+              const isCurrentlyInCyberBlade = activeSection === "cyber-blade";
+              const isActive = isCurrentlyInCyberBlade
+                ? (link.terminalTab ? (activeTerminalTab ? activeTerminalTab === link.terminalTab : link.terminalTab === "judges") : false)
+                : (link.sectionId === activeSection && !link.terminalTab);
 
               return (
                 <a
                   key={link.name}
                   href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
+                  onClick={(e) => handleNavClick(e, link.href, link.terminalTab, link.sectionId)}
                   className={cn(
                     "px-2 py-1 font-pricedown text-lg xl:text-xl tracking-tight uppercase whitespace-nowrap transition-all duration-300 relative rounded group inline-block",
                     isActive
@@ -235,15 +311,16 @@ export default function Navbar() {
           >
             <div className="container mx-auto px-4 py-5 flex flex-col gap-2">
               {navLinks.map((link) => {
-                const isActive =
-                  link.href.startsWith("#") &&
-                  activeSection === link.href.substring(1);
+                const isCurrentlyInCyberBlade = activeSection === "cyber-blade";
+                const isActive = isCurrentlyInCyberBlade
+                  ? (link.terminalTab ? (activeTerminalTab ? activeTerminalTab === link.terminalTab : link.terminalTab === "judges") : false)
+                  : (link.sectionId === activeSection && !link.terminalTab);
 
                 return (
                   <a
                     key={link.name}
                     href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
+                    onClick={(e) => handleNavClick(e, link.href, link.terminalTab, link.sectionId)}
                     className={cn(
                       "px-3 py-1.5 font-pricedown text-xl tracking-tight uppercase transition-all duration-300 rounded relative group inline-block",
                       isActive

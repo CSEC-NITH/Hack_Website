@@ -155,6 +155,17 @@ export default function CyberTerminalModal({
     setActiveTab(initialTab);
   }, [initialTab]);
 
+  const handleTabChange = (tab: TerminalTab) => {
+    setActiveTab(tab);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("cyber-terminal-tab-change", {
+          detail: { tab, isOpen: true },
+        })
+      );
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -216,7 +227,7 @@ export default function CyberTerminalModal({
 
             <div className="flex items-center gap-1.5 pt-1 overflow-x-auto">
               <button
-                onClick={() => setActiveTab("judges")}
+                onClick={() => handleTabChange("judges")}
                 className={`px-3 py-1 text-[11px] sm:text-xs border uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 ${
                   activeTab === "judges"
                     ? "bg-[#ff2a85] text-black border-[#ff2a85] shadow-[0_0_12px_rgba(255,42,133,0.6)]"
@@ -228,7 +239,7 @@ export default function CyberTerminalModal({
               </button>
 
               <button
-                onClick={() => setActiveTab("faq")}
+                onClick={() => handleTabChange("faq")}
                 className={`px-3 py-1 text-[11px] sm:text-xs border uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 ${
                   activeTab === "faq"
                     ? "bg-[#ff2a85] text-black border-[#ff2a85] shadow-[0_0_12px_rgba(255,42,133,0.6)]"
@@ -240,7 +251,7 @@ export default function CyberTerminalModal({
               </button>
 
               <button
-                onClick={() => setActiveTab("team")}
+                onClick={() => handleTabChange("team")}
                 className={`px-3 py-1 text-[11px] sm:text-xs border uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 ${
                   activeTab === "team"
                     ? "bg-[#ff2a85] text-black border-[#ff2a85] shadow-[0_0_12px_rgba(255,42,133,0.6)]"

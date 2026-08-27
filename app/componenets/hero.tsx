@@ -1,14 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion } from "framer-motion"
 import { useGlitch } from "react-powerglitch"
 import { pricedown, signatur } from "../../lib/fonts"
 
 export default function HeroSection() {
-  const { scrollY } = useScroll()
-  const backgroundY = useTransform(scrollY, [0, 1000], ["0%", "30%"])
-
   const glitch = useGlitch({
     timing: {
       duration: 3950,
@@ -96,12 +93,7 @@ export default function HeroSection() {
 
   return (
     <section id="home" className="sticky top-0 select-none overflow-hidden bg-[#0e0419] min-h-screen h-screen z-0">
-
-      <motion.div
-        style={{ y: backgroundY }}
-        className="absolute inset-0 w-full h-full min-h-screen z-0"
-      >
-
+      <div className="absolute inset-0 w-full h-full min-h-screen z-0">
         <img
           src="/hero/hack6.0%20banner.svg"
           alt="Hack 6.0 Banner"
@@ -113,7 +105,7 @@ export default function HeroSection() {
           alt="CSEC Banner"
           className="block md:hidden w-full h-[50vh] min-h-screen object-cover object-center"
         />
-      </motion.div>
+      </div>
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-[#0e0419]/40 to-[#0e0419] z-10 pointer-events-none" />
 
