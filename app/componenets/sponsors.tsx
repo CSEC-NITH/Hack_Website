@@ -18,10 +18,6 @@ const Hacked_KerX = localFont({
   fallback: ["monospace", "sans-serif"],
 });
 
-/* ============================================================================
-   TYPES & DATA
-   ============================================================================ */
-
 interface Sponsor {
   name: string;
   logo: string;
@@ -83,10 +79,6 @@ const sponsorTiers: SponsorTier[] = [
   },
 ];
 
-/* ============================================================================
-   SCI-FI TILT CARD (Holographic Panel)
-   ============================================================================ */
-
 function SciFiCard({
   children,
   accent,
@@ -129,19 +121,17 @@ function SciFiCard({
         }}
         className="relative w-full bg-[#030008]/50 backdrop-blur-xl border border-white/10 will-change-transform transition-colors duration-300 hover:bg-[#030008]/70"
       >
-        {/* Targeting Crosshairs (Corners) */}
+
         <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 z-20 transition-colors duration-300 group-hover:w-6 group-hover:h-6" style={{ borderColor: accent, boxShadow: `-2px -2px 10px ${accent}40` }} />
         <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 z-20 transition-colors duration-300 group-hover:w-6 group-hover:h-6" style={{ borderColor: accent, boxShadow: `2px -2px 10px ${accent}40` }} />
         <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 z-20 transition-colors duration-300 group-hover:w-6 group-hover:h-6" style={{ borderColor: accent, boxShadow: `-2px 2px 10px ${accent}40` }} />
         <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 z-20 transition-colors duration-300 group-hover:w-6 group-hover:h-6" style={{ borderColor: accent, boxShadow: `2px 2px 10px ${accent}40` }} />
 
-        {/* Ambient Core Glow */}
         <div 
           className="absolute inset-0 opacity-0 group-hover:opacity-15 transition-opacity duration-700 pointer-events-none z-0"
           style={{ background: `radial-gradient(circle at 50% 50%, ${accent}, transparent 70%)` }}
         />
 
-        {/* Animated Scanning Laser on Hover */}
         <motion.div
           initial={{ top: "0%", opacity: 0 }}
           whileHover={{ top: ["0%", "100%", "0%"], opacity: [0, 1, 1, 0] }}
@@ -158,10 +148,6 @@ function SciFiCard({
   );
 }
 
-/* ============================================================================
-   SPONSOR CARD CONTENT
-   ============================================================================ */
-
 function SponsorCard({
   sponsor,
   index,
@@ -174,21 +160,21 @@ function SponsorCard({
   large?: boolean;
 }) {
   const accents = {
-    gold: "#ff00aa",     // Hot Neon Pink
-    silver: "#00ffff",   // Cyan
-    bronze: "#a200ff",   // Vaporwave Violet
+    gold: "#ff00aa",     
+    silver: "#00ffff",   
+    bronze: "#a200ff",   
     inkind: ["#a200ff", "#ff00aa", "#00ffff"],
   };
 
   const accent = tier === "inkind" ? accents.inkind[index % 3] : accents[tier];
-  
+
   return (
     <SciFiCard accent={accent}>
 
       <div className={`relative flex items-center justify-center p-6 ${large ? "h-40 md:h-52" : "h-32 md:h-40"}`}>
-        {/* Subtle grid pattern behind the logo */}
+
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:15px_15px] pointer-events-none" />
-        
+
         <div className="relative z-10 w-full h-full transition-transform duration-500 group-hover:scale-[1.08]">
           <Image
             src={sponsor.logo || "/placeholder.svg"}
@@ -200,7 +186,6 @@ function SponsorCard({
         </div>
       </div>
 
-      {/* Sci-Fi Bottom Label Bar */}
       <div className="px-4 py-3 border-t border-white/5 bg-gradient-to-t from-black/60 to-transparent flex justify-between items-center">
         <span 
           className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-white"
@@ -217,10 +202,6 @@ function SponsorCard({
     </SciFiCard>
   );
 }
-
-/* ============================================================================
-   HUD TIER LABEL
-   ============================================================================ */
 
 function TierLabel({
   children,
@@ -252,10 +233,6 @@ function TierLabel({
   );
 }
 
-/* ============================================================================
-   MAIN SPONSOR SECTION
-   ============================================================================ */
-
 export default function SponsorsSection() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.08 });
 
@@ -276,9 +253,7 @@ export default function SponsorsSection() {
 
   return (
     <section id="sponsors" className="relative overflow-hidden py-24 md:py-32">
-      
-      {/* Assuming the vibrant background image is behind this container, 
-          this subtle vignette helps text pop without blocking the art */}
+
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#05010a_100%)] pointer-events-none z-0" />
 
       <motion.div
@@ -288,7 +263,7 @@ export default function SponsorsSection() {
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
       >
-        {/* GTA STYLE HEADER & EXTENDING LINE */}
+
         <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-16 sm:mb-20">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -318,7 +293,6 @@ export default function SponsorsSection() {
             </h2>
           </motion.div>
 
-          {/* PLAIN LINE EXTENDING ON THE SAME ROW */}
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
             whileInView={{ opacity: 1, scaleX: 1 }}
@@ -329,7 +303,6 @@ export default function SponsorsSection() {
           />
         </div>
 
-        {/* GOLD TIER */}
         <motion.div variants={item} className="mb-16">
           <TierLabel index={0} accent="#ff00aa">{gold.tier}</TierLabel>
           <div className="mx-auto max-w-3xl">
@@ -337,7 +310,6 @@ export default function SponsorsSection() {
           </div>
         </motion.div>
 
-        {/* SILVER TIER */}
         <motion.div variants={item} className="mb-16">
           <TierLabel index={1} accent="#00ffff">{silver.tier}</TierLabel>
           <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
@@ -347,7 +319,6 @@ export default function SponsorsSection() {
           </div>
         </motion.div>
 
-        {/* BRONZE & IN-KIND TIER */}
         <motion.div variants={item} className="mx-auto grid max-w-4xl gap-12 lg:grid-cols-[1fr_1.5fr]">
           <div>
             <TierLabel index={2} accent="#a200ff">{bronze.tier}</TierLabel>
@@ -363,7 +334,6 @@ export default function SponsorsSection() {
             </div>
           </div>
         </motion.div>
-
 
       </motion.div>
     </section>

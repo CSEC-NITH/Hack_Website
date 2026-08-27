@@ -17,7 +17,6 @@ export default function CyberBlade3DSection() {
   const [loading, setLoading] = useState(true);
   const modelRef = useRef<any>(null);
 
-  // Cyber Terminal Window Modal state
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [activeTerminalTab, setActiveTerminalTab] = useState<TerminalTab>("judges");
 
@@ -44,14 +43,11 @@ export default function CyberBlade3DSection() {
       const width = container.clientWidth;
       const height = container.clientHeight;
 
-      // 1. SCENE
       scene = new THREE.Scene();
 
-      // 2. CAMERA
       camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
       camera.position.set(0, 1.2, 4.2);
 
-      // 3. RENDERER
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(width, height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -59,22 +55,18 @@ export default function CyberBlade3DSection() {
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.3;
 
-      // Clear any previous canvas
       container.innerHTML = "";
       container.appendChild(renderer.domElement);
 
-      // 4. ORBIT CONTROLS
       if ((THREE as any).OrbitControls) {
         controls = new (THREE as any).OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        // Disable zoom so mouse scroll passes through to scroll the page
         controls.enableZoom = false;
         controls.enableRotate = true;
         controls.enablePan = false;
       }
 
-      // 5. LIGHTING (Cyberpunk Neon Stage Lights)
       const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
       scene.add(ambientLight);
 
@@ -86,17 +78,14 @@ export default function CyberBlade3DSection() {
       dirLight2.position.set(-5, -5, -5);
       scene.add(dirLight2);
 
-      // Neon Cyan Accent Point Light
       const cyanLight = new THREE.PointLight(0x00f0ff, 4, 15);
       cyanLight.position.set(-3, 2, 3);
       scene.add(cyanLight);
 
-      // Neon Pink Accent Point Light
       const pinkLight = new THREE.PointLight(0xff2a85, 4, 15);
       pinkLight.position.set(3, -2, 3);
       scene.add(pinkLight);
 
-      // 6. LOAD GLB MODEL DIRECTLY FROM PUBLIC ASSETS
       const loader = new (THREE as any).GLTFLoader();
       const modelPath = "/spear-blade/source/UTSM 3_0 spear blade.glb";
 
@@ -105,7 +94,6 @@ export default function CyberBlade3DSection() {
         (gltf: any) => {
           const model = gltf.scene;
 
-          // Compute bounding box to auto-center and normalize scale
           const box = new THREE.Box3().setFromObject(model);
           const center = box.getCenter(new THREE.Vector3());
           const size = box.getSize(new THREE.Vector3());
@@ -114,12 +102,10 @@ export default function CyberBlade3DSection() {
           const scale = 1.95 / maxDim;
           model.scale.set(scale, scale, scale);
 
-          // Center the pivot
           model.position.x = -center.x * scale;
           model.position.y = -center.y * scale;
           model.position.z = -center.z * scale;
 
-          // Wrap in a rotation pivot group
           const pivot = new THREE.Group();
           pivot.add(model);
           scene.add(pivot);
@@ -151,7 +137,6 @@ export default function CyberBlade3DSection() {
         }
       );
 
-      // 7. RESIZE LISTENER
       const handleResize = () => {
         if (!containerRef.current || !renderer || !camera) return;
         const w = containerRef.current.clientWidth;
@@ -163,7 +148,6 @@ export default function CyberBlade3DSection() {
 
       window.addEventListener("resize", handleResize);
 
-      // 8. ANIMATION LOOP
       const animate = () => {
         animationFrameId = requestAnimationFrame(animate);
 
@@ -183,10 +167,17 @@ export default function CyberBlade3DSection() {
       return true;
     };
 
-    // Check periodically until scripts are loaded
+    if (!initThree()) {
+      const checkInterval = setInterval(() => {
+        if (initThree()) {
+          clearInterval(checkInterval);
+        }
+      }, 100);
+    }
+
     const checkInterval = setInterval(() => {
-      if ((window as any).THREE && (window as any).THREE.GLTFLoader) {
-        clearInterval(checkInterval);
+      const THREE = (window as any).THREE;
+      if (THREE && (THREE as any).GLTFLoader && containerRef.current && !modelRef.current) {
         initThree();
       }
     }, 100);
@@ -203,20 +194,15 @@ export default function CyberBlade3DSection() {
 
   return (
     <section id="cyber-blade" className="relative w-full py-16 px-4 sm:px-6 md:px-8 bg-transparent select-none flex items-center justify-center overflow-hidden min-h-[480px] sm:min-h-[560px] md:min-h-[640px]">
-      {/* Retro Dithered Cloud Computer Desktop Wallpaper with Pink & Purple Glow Overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]">
-        {/* Dithered Clouds Wallpaper */}
         <div
           className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity scale-105"
           style={{ backgroundImage: "url('/retro-clouds.jpg')" }}
         />
-        {/* Pink & Purple Vaporwave Color Wash Overlay */}
         <div className="absolute inset-0 bg-gradient-to-tr from-[#ff2a85]/40 via-[#8b5cf6]/35 to-[#150228]/60 mix-blend-color-dodge" />
-        {/* Subtle Vignette Ambient Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#04010a_90%)]" />
       </div>
 
-      {/* Load Three.js, GLTFLoader, and OrbitControls directly */}
       <Script
         src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
         strategy="beforeInteractive"
@@ -230,7 +216,6 @@ export default function CyberBlade3DSection() {
         strategy="afterInteractive"
       />
 
-      {/* Left Column Minimalist Modern Frosted Glass Folder Card */}
       <div className="absolute left-4 sm:left-8 md:left-12 lg:left-20 top-1/2 -translate-y-1/2 z-20 p-4 sm:p-5 md:p-6 bg-[#0c0416]/75 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-[0_15px_45px_rgba(0,0,0,0.7),_0_0_30px_rgba(255,42,133,0.15)] flex flex-col gap-6 sm:gap-7 md:gap-8 items-center transition-all duration-300 hover:border-[#ff2a85]/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.8),_0_0_35px_rgba(255,42,133,0.25)]">
         {FOLDERS.map((folder) => (
           <button
@@ -238,10 +223,8 @@ export default function CyberBlade3DSection() {
             onClick={(e) => handleFolderClick(e, folder.tab)}
             className="group relative flex flex-col items-center gap-2 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:scale-110 active:scale-95 bg-transparent border-0 outline-none"
           >
-            {/* Neon Pink/Purple Glow Aura */}
             <div className="absolute -inset-2 bg-gradient-to-tr from-[#ff2a85] via-[#a855f7] to-[#ec4899] rounded-2xl opacity-0 group-hover:opacity-50 blur-xl transition-all duration-500 pointer-events-none" />
 
-            {/* Folder Graphic */}
             <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 drop-shadow-[0_4px_12px_rgba(168,85,247,0.3)] group-hover:drop-shadow-[0_0_24px_rgba(255,42,133,0.85)] transition-all duration-300">
               <Image
                 src="/monitor/CSEC (8).svg"
@@ -252,7 +235,6 @@ export default function CyberBlade3DSection() {
               />
             </div>
 
-            {/* GTA Pricedown Label */}
             <span
               className={`font-pricedown text-sm sm:text-base md:text-lg tracking-wider text-white/90 group-hover:text-[#ff2a85] uppercase transition-colors duration-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] ${pricedown.className}`}
             >
@@ -262,23 +244,19 @@ export default function CyberBlade3DSection() {
         ))}
       </div>
 
-      {/* 3D Element Container */}
       <div className="relative w-full max-w-4xl h-[450px] sm:h-[550px] md:h-[620px] flex items-center justify-center">
-        {/* Loading Spinner */}
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center gap-3 text-[#00f0ff] z-20 pointer-events-none">
             <div className="w-8 h-8 border-2 border-[#00f0ff] border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 
-        {/* Pure WebGL 3D Blade Mount Container */}
         <div
           ref={containerRef}
           className="w-full h-full cursor-grab active:cursor-grabbing relative z-10"
         />
       </div>
 
-      {/* Cyberpunk Vaporwave Terminal Window Modal System */}
       <CyberTerminalModal
         isOpen={terminalOpen}
         initialTab={activeTerminalTab}

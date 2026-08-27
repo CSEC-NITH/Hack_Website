@@ -96,18 +96,18 @@ export default function HeroSection() {
 
   return (
     <section id="home" className="sticky top-0 select-none overflow-hidden bg-[#0e0419] min-h-screen h-screen z-0">
-      {/* PARALLAX BACKGROUND IMAGE */}
+
       <motion.div
         style={{ y: backgroundY }}
         className="absolute inset-0 w-full h-full min-h-screen z-0"
       >
-        {/* Desktop / Tablet (md, lg) */}
+
         <img
           src="/hero/hack6.0%20banner.svg"
           alt="Hack 6.0 Banner"
           className="hidden md:block w-full h-full min-h-screen object-cover object-center"
         />
-        {/* Mobile (sm) */}
+
         <img
           src="/hero/CSEC.svg"
           alt="CSEC Banner"
@@ -115,7 +115,6 @@ export default function HeroSection() {
         />
       </motion.div>
 
-      {/* SMOOTH DARK PURPLE TRANSITION GRADIENT */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-[#0e0419]/40 to-[#0e0419] z-10 pointer-events-none" />
 
       <div className="min-h-screen h-screen flex flex-col justify-center items-center relative z-20 px-4 pt-16 pb-6">
@@ -125,7 +124,7 @@ export default function HeroSection() {
           initial="hidden"
           animate="show"
         >
-          {/* HACK 6.0 - MATCHING NAVBAR FONT STYLE */}
+
           <motion.div variants={item} className="relative">
             <h1
               className={`
@@ -143,7 +142,7 @@ export default function HeroSection() {
                 select-none
               `}
             >
-              {/* Glitch Overlay */}
+
               <span className="relative inline-block">
                 <span
                   ref={glitch.ref}
@@ -182,7 +181,6 @@ export default function HeroSection() {
             </h1>
           </motion.div>
 
-          {/* Aesthetic Register Button - Navbar Styled with Wider Width */}
           <motion.div variants={item} className="relative z-20 flex justify-center w-full px-4">
             <a
               href="https://hack-1158.devfolio.co/"
@@ -211,10 +209,9 @@ export default function HeroSection() {
                 select-none
               "
             >
-              {/* Shimmer light-sweep effect */}
+
               <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
 
-              {/* Pulsing live neon indicator */}
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00f0ff]" />
@@ -224,14 +221,12 @@ export default function HeroSection() {
                 Register Now
               </span>
 
-              {/* GTA Arcade Arrow */}
               <span className="relative z-10 text-[#00f0ff] text-sm md:text-base transition-transform duration-300 group-hover:translate-x-2 drop-shadow-[0_0_6px_rgba(0,240,255,0.8)]">
                 ▶
               </span>
             </a>
           </motion.div>
 
-          {/* Countdown - Compact Dark Styled */}
           <motion.div variants={item} className="w-full max-w-xs sm:max-w-sm md:max-w-lg lg:max-w-xl mx-auto mt-1 sm:mt-3 relative z-20">
             <div
               className="
@@ -290,19 +285,16 @@ export default function HeroSection() {
                       select-none
                     "
                   >
-                    {/* Top ambient glow line */}
+
                     <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#00f0ff]/50 to-transparent group-hover:via-[#ff2a85]/80 transition-colors duration-300" />
 
-                    {/* Subtle shimmer sweep on hover */}
                     <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
 
-                    {/* Live neon indicator */}
                     <span className="absolute top-1.5 right-1.5 flex h-1.5 w-1.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75" />
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00f0ff]" />
                     </span>
 
-                    {/* Pure White Digits */}
                     <div
                       className="
                         text-2xl
@@ -320,7 +312,6 @@ export default function HeroSection() {
                       {value}
                     </div>
 
-                    {/* Unit Label */}
                     <div
                       className="
                         text-[10px]

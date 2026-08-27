@@ -197,20 +197,18 @@ const TeamCard = ({
             onMouseEnter={handleMouseEnter}
             className="group relative z-0 origin-center w-[90%] sm:w-[85%] mx-auto"
         >
-            {/* Cyan offset window */}
+
             <div className="pointer-events-none absolute -right-2 -bottom-2 left-2 top-2 border-2 border-[#00ffff]" />
 
-            {/* Pink offset window */}
             <div className="pointer-events-none absolute -top-2 right-2 -bottom-1 left-[-5px] border-2 border-[#ff4fd8]" />
 
-            {/* Main retro window */}
             <div
                 className="relative overflow-hidden border-2 border-[#292929] bg-[#f2f2f2]"
                 style={{
                     boxShadow: "5px 5px 0 #8a2be2, -3px -3px 0 #ff4fd8",
                 }}
             >
-                {/* Classic title bar */}
+
                 <div className="flex h-10 items-center justify-between border-b-2 border-[#292929] bg-[#e7e7e7] px-2">
                     <div className="flex items-center gap-2">
                         <div className="relative h-5 w-5 border border-[#555] bg-[#ff9edc]">
@@ -235,7 +233,6 @@ const TeamCard = ({
                     </div>
                 </div>
 
-                {/* Photo Area */}
                 <div className="relative aspect-[4/5] overflow-hidden bg-[#d8d8d8]">
                     <img
                         src={member.image}
@@ -247,7 +244,6 @@ const TeamCard = ({
                         }`}
                     />
 
-                    {/* Cyan glitch ghost */}
                     <motion.img
                         src={member.image}
                         alt=""
@@ -278,7 +274,6 @@ const TeamCard = ({
                         }}
                     />
 
-                    {/* Pink glitch ghost */}
                     <motion.img
                         src={member.image}
                         alt=""
@@ -309,7 +304,6 @@ const TeamCard = ({
                         }}
                     />
 
-                    {/* Glitch horizontal lines */}
                     {glitching && (
                         <>
                             <motion.div
@@ -340,7 +334,6 @@ const TeamCard = ({
                         </>
                     )}
 
-                    {/* CRT Scanlines */}
                     <div
                         className="pointer-events-none absolute inset-0 z-20 opacity-[0.12]"
                         style={{
@@ -349,7 +342,6 @@ const TeamCard = ({
                         }}
                     />
 
-                    {/* Dither Texture */}
                     <div
                         className="pointer-events-none absolute inset-0 z-20 opacity-[0.08]"
                         style={{
@@ -359,10 +351,8 @@ const TeamCard = ({
                         }}
                     />
 
-                    {/* Vaporwave Tint Wash */}
                     <div className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-br from-[#00ffff]/10 via-transparent to-[#ff4fd8]/20 mix-blend-screen" />
 
-                    {/* Information Panel */}
                     <div className="absolute bottom-0 left-0 right-0 z-30 border-t-2 border-[#292929] bg-[#eeeeee]/95 px-4 py-3">
                         <div className="flex items-center gap-2">
                             <span className="h-3 w-3 border border-[#333] bg-[#ff4fd8]" />
@@ -393,11 +383,11 @@ export default function OrganizersSection() {
             className="relative overflow-hidden py-24"
         >
             <div className="container relative mx-auto px-6">
-                {/* Header */}
+
                 <motion.div className="mb-16 text-center">
                     <div className="mx-auto mb-6 inline-flex items-center gap-2 border-2 border-[#333] bg-[#eeeeee] px-5 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#333] shadow-[5px_5px_0_#ff1493]">
                         <span className="h-3 w-3 border border-[#333] bg-[#8a2be2]" />
-                        SYSTEM_DIRECTORY://ORGANIZERS
+                        SYSTEM_DIRECTORY:
                     </div>
 
                     <h2
@@ -414,11 +404,10 @@ export default function OrganizersSection() {
                     </p>
                 </motion.div>
 
-                {/* Team Groups */}
                 <div className="space-y-20">
                     {teamData.map((group, groupIndex) => (
                         <div key={group.title}>
-                            {/* Group Label */}
+
                             <div className="mb-8 flex items-center gap-4">
                                 <div className="h-[2px] flex-1 bg-[#4b0082]" />
 

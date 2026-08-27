@@ -120,7 +120,7 @@ export default function Footer() {
 
   return (
     <footer className="relative w-full border-t border-white/15 bg-black text-white select-none overflow-hidden">
-      {/* Small Decorative Side Graphic */}
+
       <div className="absolute -bottom-8 -right-8 sm:right-4 sm:bottom-0 pointer-events-none z-0 w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 opacity-90 sm:opacity-85 transition-opacity">
         <Image
           src="/footer/CSEC (5).svg"
@@ -129,17 +129,17 @@ export default function Footer() {
           className="object-contain object-bottom-right drop-shadow-[0_0_20px_rgba(255,42,133,0.3)]"
           priority={false}
         />
-        {/* Soft edge blend fade */}
+
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_50%,rgba(0,0,0,0.5)_95%)]" />
       </div>
 
       <div className="relative z-10 mx-10   px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-        {/* 4 Column Main Grid */}
+
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8 pb-12">
-          {/* Col 1: CSEC Brand & Description */}
+
           <div className="lg:col-span-4 flex flex-col justify-between space-y-6">
             <div>
-              {/* Brand Logo & Name in Pricedown */}
+
               <div className="flex items-center gap-3">
                 <Link
                   href="https://csec.nith.ac.in/"
@@ -168,13 +168,11 @@ export default function Footer() {
                 </div>
               </div>
 
-              {/* Description */}
               <p className="mt-4 max-w-sm text-sm leading-relaxed text-gray-400 font-sans">
                 Empowering student innovation through code, creativity, and collaboration in the hills of Himachal Pradesh.
               </p>
             </div>
 
-            {/* Social Icons */}
             <div className="flex items-center gap-3 pt-2">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
@@ -194,7 +192,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Col 2: Quick Links */}
           <div className="lg:col-span-2 sm:col-span-1 space-y-4">
             <h4
               className={`flex items-center gap-2 text-xl font-pricedown tracking-wider text-white ${pricedown.className}`}
@@ -219,7 +216,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Col 3: Resources */}
           <div className="lg:col-span-2 sm:col-span-1 space-y-4">
             <h4
               className={`flex items-center gap-2 text-xl font-pricedown tracking-wider text-white ${pricedown.className}`}
@@ -253,7 +249,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Col 4: NIT Hamirpur Map */}
           <div className="lg:col-span-4 sm:col-span-2 space-y-3">
             <div className="flex items-center justify-between">
               <h4
@@ -262,9 +257,7 @@ export default function Footer() {
                 <MapPin className="h-4 w-4 text-[#ff2a85] shrink-0" />
                 <span>VENUE LOCATION</span>
               </h4>
-             
-                
-            
+
             </div>
 
             <p className="text-xs text-gray-400 font-sans">
@@ -293,7 +286,6 @@ export default function Footer() {
                 className="w-full h-full object-cover pointer-events-none group-hover:scale-105 transition-transform duration-300"
               />
 
-              {/* Premium Vice City Style Hover Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/30 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-1.5 backdrop-blur-[2px]">
                 <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/90 border-2 border-[#00f0ff] shadow-[0_0_20px_rgba(0,240,255,0.5),_3px_3px_0px_#ff2a85] group-hover:scale-105 transition-transform duration-200">
                   <MapPin className="w-4 h-4 text-[#ff2a85] fill-[#ff2a85]/40 animate-pulse shrink-0" />
@@ -310,7 +302,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Horizontal Rule & Copyright */}
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-gray-500 font-sans">
           <p>© 2026 CSEC, NIT Hamirpur. All rights reserved.</p>
         </div>

@@ -21,7 +21,7 @@ export default function PrizeSection() {
       icon: Lightbulb,
       title: "AI / ML Track",
       totalAmount: "₹30,000",
-      accent: "#00ffff", // Neon Cyan
+      accent: "#00ffff", 
       bgAccent: "bg-[#00ffff]",
       textAccent: "text-[#00ffff]",
       description: "Breakthrough machine learning models & neural innovations.",
@@ -36,7 +36,7 @@ export default function PrizeSection() {
       icon: Hexagon,
       title: "Blockchain & Web3",
       totalAmount: "₹30,000",
-      accent: "#ff00aa", // Hot Pink
+      accent: "#ff00aa", 
       bgAccent: "bg-[#ff00aa]",
       textAccent: "text-[#ff00aa]",
       description: "Decentralized architecture and Web3 ecosystem utilities.",
@@ -51,7 +51,7 @@ export default function PrizeSection() {
       icon: Gem,
       title: "Open Innovation",
       totalAmount: "₹30,000",
-      accent: "#a200ff", // Vaporwave Violet
+      accent: "#a200ff", 
       bgAccent: "bg-[#a200ff]",
       textAccent: "text-[#a200ff]",
       description: "Visionary multidisciplinary hacks & wild hardware ideas.",
@@ -86,9 +86,9 @@ export default function PrizeSection() {
 
   return (
     <section id="prizes" className="relative py-24 px-4 sm:px-6 md:px-8 bg-transparent text-white select-none overflow-hidden">
-      {/* Responsive Background Images for Web & Mobile */}
+
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Desktop / Web Banner Background */}
+
         <div className="hidden sm:block absolute inset-0 opacity-20">
           <Image
             src="/prizes/hack6.0 banner (1).svg"
@@ -100,7 +100,6 @@ export default function PrizeSection() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/90" />
         </div>
 
-        {/* Mobile Artwork Background */}
         <div className="block sm:hidden absolute inset-0 opacity-25">
           <Image
             src="/prizes/CSEC (3).svg"
@@ -114,7 +113,7 @@ export default function PrizeSection() {
       </div>
 
       <div className="container max-w-5xl mx-auto relative z-10">
-        {/* GTA STYLE HEADER & EXTENDING LINE */}
+
         <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-16 sm:mb-20">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -144,7 +143,6 @@ export default function PrizeSection() {
             </h2>
           </motion.div>
 
-          {/* PLAIN LINE EXTENDING ON THE SAME ROW */}
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
             whileInView={{ opacity: 1, scaleX: 1 }}
@@ -155,10 +153,8 @@ export default function PrizeSection() {
           />
         </div>
 
-        {/* PRIZES GRID */}
         <div className="space-y-10">
 
-          {/* FEATURED: GRAND CHAMPION (VICE CITY MISSION PASSED VIBE) */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -180,10 +176,9 @@ export default function PrizeSection() {
               hover:-translate-x-1
             "
           >
-            {/* Top Accent Stripe */}
+
             <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-[#00ffff] via-[#ff00aa] to-[#a200ff] border-b-4 border-black" />
 
-            {/* 5-Star Wanted Level Indicator */}
             <div className="absolute -top-6 right-6 flex gap-1 bg-[#1a1a1a] px-4 py-2 border-4 border-black shadow-md rotate-3">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star key={star} className="w-5 h-5 text-[#00ffff] fill-[#00ffff] animate-pulse" style={{ animationDelay: `${star * 0.1}s` }} />
@@ -193,7 +188,6 @@ export default function PrizeSection() {
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left mt-2">
               <div className="flex flex-col sm:flex-row items-center gap-6">
 
-                {/* Thick Icon Block */}
                 <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#00ffff] border-4 border-black shadow-md flex items-center justify-center shrink-0 -rotate-3 group-hover:rotate-0 transition-transform">
                   <Trophy className="w-10 h-10 sm:w-12 sm:h-12 text-black" strokeWidth={2.5} />
                 </div>
@@ -215,7 +209,6 @@ export default function PrizeSection() {
                 </div>
               </div>
 
-              {/* Grand Prize Number */}
               <div className="flex flex-col items-center md:items-end shrink-0 bg-[#1a1a1a] border-4 border-black p-4 sm:p-5 shadow-md rotate-2 group-hover:rotate-0 transition-transform">
                 <span className="text-xs font-black tracking-widest text-[#00ffff] uppercase mb-1">
                   PAYOUT
@@ -227,7 +220,6 @@ export default function PrizeSection() {
             </div>
           </motion.div>
 
-          {/* TRACK PRIZES: 3-COLUMN GRID */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {trackPrizes.map((track, index) => {
               const Icon = track.icon;
@@ -258,12 +250,12 @@ export default function PrizeSection() {
                     justify-between
                   "
                 >
-                  {/* Colored Header Block */}
+
                   <div className={`absolute top-0 left-0 right-0 h-3 ${track.bgAccent} border-b-4 border-black`} />
 
                   <div className="mt-4">
                     <div className="flex items-center justify-between gap-2 mb-4">
-                      {/* Chunky Icon */}
+
                       <div className={`w-12 h-12 ${track.bgAccent} border-4 border-black shadow-md flex items-center justify-center shrink-0`}>
                         <Icon className="w-6 h-6 text-black" strokeWidth={2.5} />
                       </div>
@@ -287,7 +279,6 @@ export default function PrizeSection() {
                     </p>
                   </div>
 
-                  {/* Distribution Pills (Weapon Wheel Style) */}
                   <div className="pt-4 border-t-4 border-[#222] grid grid-cols-3 gap-2 text-center">
                     {track.distribution.map((d) => (
                       <div key={d.rank} className="bg-[#1a1a1a] border-2 border-black py-1 px-1 shadow-sm">
@@ -301,7 +292,6 @@ export default function PrizeSection() {
             })}
           </div>
 
-          {/* SPECIAL CATEGORIES: 2-COLUMN GRID */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 pt-4">
             {specialCategories.map((spec, index) => {
               const Icon = spec.icon;
@@ -333,7 +323,7 @@ export default function PrizeSection() {
                     gap-4
                   "
                 >
-                  {/* Left Color Bar */}
+
                   <div className={`absolute left-0 top-0 bottom-0 w-3 ${spec.bgAccent} border-r-4 border-black`} />
 
                   <div className="flex items-center gap-4 pl-4">

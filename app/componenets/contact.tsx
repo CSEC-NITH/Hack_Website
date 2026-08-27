@@ -96,7 +96,7 @@ export default function ContactSection() {
   return (
     <section id="contact" className="relative py-20 px-4 sm:px-6 md:px-8 bg-black text-white select-none">
       <div className="container max-w-5xl mx-auto">
-        {/* GTA STYLE HEADER & EXTENDING LINE ON THE SAME ROW */}
+
         <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-12 sm:mb-16">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -126,7 +126,6 @@ export default function ContactSection() {
             </h2>
           </motion.div>
 
-          {/* PLAIN LINE EXTENDING ON THE SAME ROW */}
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
             whileInView={{ opacity: 1, scaleX: 1 }}
@@ -137,9 +136,8 @@ export default function ContactSection() {
           />
         </div>
 
-        {/* MAIN GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* LEFT: TRANSMISSION FORM */}
+
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -163,7 +161,7 @@ export default function ContactSection() {
               shadow-[0_12px_40px_rgba(0,0,0,0.8),_3px_3px_0px_#00f0ff]
             "
           >
-            {/* Top Ambient Glow Line */}
+
             <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#ff2a85] to-transparent" />
 
             <div className="flex items-center gap-2 mb-6">
@@ -235,7 +233,6 @@ export default function ContactSection() {
                 />
               </div>
 
-              {/* Status Feedback */}
               {submitStatus === "success" && (
                 <motion.div
                   initial={{ opacity: 0, y: -6 }}
@@ -258,7 +255,6 @@ export default function ContactSection() {
                 </motion.div>
               )}
 
-              {/* Submit CTA Button */}
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -285,7 +281,7 @@ export default function ContactSection() {
                   select-none
                 "
               >
-                {/* Shimmer Light Sweep */}
+
                 <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
 
                 {isSubmitting ? (
@@ -303,7 +299,6 @@ export default function ContactSection() {
             </form>
           </motion.div>
 
-          {/* RIGHT: CONTACT CHANNELS */}
           <div className="lg:col-span-5 space-y-4">
             {contactChannels.map((channel, index) => {
               const Icon = channel.icon;
@@ -338,7 +333,7 @@ export default function ContactSection() {
                     block
                   "
                 >
-                  {/* Top Ambient Line */}
+
                   <div
                     style={{
                       backgroundImage: `linear-gradient(to right, transparent, ${channel.accentColor}, transparent)`,
@@ -346,7 +341,6 @@ export default function ContactSection() {
                     className="absolute inset-x-0 top-0 h-[2px] opacity-80 group-hover:opacity-100 transition-opacity duration-300"
                   />
 
-                  {/* Shimmer Sweep */}
                   <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
 
                   <div className="flex items-start gap-4">

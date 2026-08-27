@@ -20,7 +20,7 @@ interface TeamMember {
 }
 
 const teamMembers: TeamMember[] = [
-  // 2022 Batch
+
   {
     name: "Tanishq Verma",
     batch: "2022",
@@ -112,7 +112,6 @@ const teamMembers: TeamMember[] = [
         "https://res.cloudinary.com/dvnrlqqpq/image/upload/v1739960542/akash_bqdy3d.jpg",
   },
 
-  // 2023 Batch
   {
     name: "Isha",
     batch: "2023",
@@ -234,7 +233,6 @@ const teamMembers: TeamMember[] = [
         "https://res.cloudinary.com/dkcrhkz4m/image/upload/v1738082144/photo_k91tqe.jpg",
   },
 
-  // 2024 Batch
   {
     name: "Lavish",
     batch: "2024",
@@ -327,7 +325,7 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
               boxShadow: `6px 6px 0px ${theme.accent}, -2px -2px 0px ${theme.secondary}`,
             }}
         >
-          {/* Windows 98 Window Title Bar */}
+
           <div
               className="flex h-9 items-center justify-between border-b-2 border-[#292929] px-2.5 select-none"
               style={{
@@ -357,7 +355,6 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
             </div>
           </div>
 
-          {/* Member Photo Frame */}
           <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#1e1e2f] p-2">
             <div className="relative w-full h-full overflow-hidden border border-[#292929]">
               <img
@@ -375,7 +372,6 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
             </div>
           </div>
 
-          {/* Info Details Section */}
           <div className="p-3 bg-[#eeeeee] border-t-2 border-[#292929] flex flex-col justify-between flex-1">
             <div className="mb-2">
               <h3 className="font-mono text-sm sm:text-base font-black text-[#1e1e2f] uppercase tracking-tight truncate">
@@ -419,11 +415,11 @@ export default function TeamSection() {
   return (
       <section id="team" className="relative z-10 min-h-screen py-24 px-4 sm:px-6">
         <div className="container relative mx-auto max-w-7xl">
-          {/* Section Header */}
+
           <div className="mb-14 text-center">
             <div className="mx-auto mb-6 inline-flex items-center gap-2 border-2 border-[#333] bg-white px-5 py-2 font-mono text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-[#333] shadow-[5px_5px_0_#ff1493]">
               <span className="h-3 w-3 border border-[#333] bg-[#8a2be2]" />
-              SYSTEM_DIRECTORY://COMPLETE_TEAM
+              SYSTEM_DIRECTORY:
             </div>
 
             <h2
@@ -439,7 +435,6 @@ export default function TeamSection() {
             </p>
           </div>
 
-          {/* Retro Filter Bar Container */}
           <div className="mb-14">
             <div className="mx-auto max-w-4xl border-2 border-[#292929] bg-[#eeeeee] p-4 sm:p-5 shadow-[5px_5px_0_#8a2be2]">
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -448,7 +443,6 @@ export default function TeamSection() {
                   <span>FILTER_BY_BATCH:</span>
                 </div>
 
-                {/* Filter Buttons */}
                 <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
                   {yearFilters.map((filter) => {
                     const isActive = selectedYear === filter.value;
@@ -478,7 +472,6 @@ export default function TeamSection() {
             </div>
           </div>
 
-          {/* Team Members Responsive Grid */}
           <motion.div
               layout
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-7 sm:gap-8"

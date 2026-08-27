@@ -90,9 +90,9 @@ export default function Navbar() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-          {/* Brand & Logos Section */}
+
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            {/* CSEC Logo - Link to external site */}
+
             <motion.a
               href="https://csec.nith.ac.in/"
               target="_blank"
@@ -113,10 +113,8 @@ export default function Navbar() {
               />
             </motion.a>
 
-            {/* Separator */}
             <div className="h-7 w-px bg-white/40"></div>
 
-            {/* HACK Logo - Link to home section */}
             <motion.a
               href="#home"
               onClick={(e) => handleNavClick(e, "#home")}
@@ -136,7 +134,6 @@ export default function Navbar() {
               />
             </motion.a>
 
-            {/* HACK 6.0 Pure White Text */}
             <Link
               href="#home"
               onClick={(e) => handleNavClick(e, "#home")}
@@ -155,7 +152,6 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Nav Links */}
           <nav className="hidden lg:flex items-center gap-1.5 xl:gap-3">
             {navLinks.map((link) => {
               const isActive =
@@ -175,7 +171,7 @@ export default function Navbar() {
                   )}
                 >
                   <span>{link.name}</span>
-                  {/* Stylized GTA neon extension underline */}
+
                   <span
                     className={cn(
                       "absolute bottom-0 left-0 h-[2.5px] rounded-full transition-all duration-300 pointer-events-none",
@@ -189,7 +185,6 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Devfolio Register CTA */}
           <div className="hidden lg:flex items-center gap-3 shrink-0">
             <a
               href="https://hack-1158.devfolio.co/"
@@ -197,10 +192,9 @@ export default function Navbar() {
               rel="noopener noreferrer"
               className="relative group overflow-hidden px-5 py-2 rounded-lg bg-gradient-to-r from-[#ff2a85] via-[#ff007f] to-[#7928ca] text-white font-pricedown text-xl tracking-wider uppercase border border-[#ff75c3]/60 shadow-[0_0_15px_rgba(255,42,133,0.45),_3px_3px_0px_#00f0ff] hover:shadow-[0_0_25px_rgba(255,42,133,0.85),_4px_4px_0px_#00f0ff] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_0_10px_rgba(255,42,133,0.4),_1px_1px_0px_#00f0ff] transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap"
             >
-              {/* Shimmer light-sweep effect */}
+
               <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
 
-              {/* Pulsing live neon indicator */}
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00f0ff]" />
@@ -210,14 +204,12 @@ export default function Navbar() {
                 Register
               </span>
 
-              {/* GTA Arcade Arrow */}
               <span className="relative z-10 text-[#00f0ff] text-xs transition-transform duration-300 group-hover:translate-x-1 drop-shadow-[0_0_6px_rgba(0,240,255,0.8)]">
                 ▶
               </span>
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="lg:hidden">
             <Button
               variant="ghost"
@@ -232,7 +224,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
       <AnimatePresence>
         {isOpen && (
           <motion.div

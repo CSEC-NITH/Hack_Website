@@ -5,7 +5,6 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { pricedown } from "@/lib/fonts";
 
-// Cyberpunk Mech HUD Corner Bracket
 const CyberCorner = ({
   position,
   color = "#ffffff",
@@ -38,22 +37,21 @@ const CyberCorner = ({
         xmlns="http://www.w3.org/2000/svg"
         className={`w-full h-full ${transformMap[position]} drop-shadow-[0_0_15px_rgba(255,255,255,0.7)]`}
       >
-        {/* Outer Heavy Angular Bracket */}
+
         <path
           d="M 5 150 L 5 45 L 45 5 L 150 5 L 135 15 L 50 15 L 15 50 L 15 135 Z"
           fill={color}
         />
-        {/* Secondary Tech Track */}
+
         <path
           d="M 22 120 L 22 60 L 60 22 L 120 22 L 110 30 L 65 30 L 30 65 L 30 110 Z"
           fill={color}
           opacity="0.8"
         />
-        {/* Chamfered Edge Spike */}
+
         <polygon points="0,55 0,110 8,100 8,65" fill={color} />
         <polygon points="55,0 110,0 100,8 65,8" fill={color} />
 
-        {/* Tech Data Slot Cutouts */}
         <rect x="68" y="24" width="8" height="4" fill="#000000" />
         <rect x="80" y="24" width="8" height="4" fill="#000000" />
         <rect x="92" y="24" width="8" height="4" fill="#000000" />
@@ -62,7 +60,6 @@ const CyberCorner = ({
         <rect x="24" y="80" width="4" height="8" fill="#000000" />
         <rect x="24" y="92" width="4" height="8" fill="#000000" />
 
-        {/* Diagonal Tech Notch */}
         <polygon points="40,40 48,40 40,48" fill={color} />
       </svg>
     </div>
@@ -72,10 +69,9 @@ const CyberCorner = ({
 export default function AboutSection() {
   return (
     <section id="about" className="relative py-24 px-4 sm:px-6 md:px-8 bg-black text-white select-none overflow-hidden">
-      {/* Subtle Background Grid */}
+
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none" />
 
-      {/* Small Decorative Ambient Background Graphic Left */}
       <div className="absolute -left-8 sm:-left-4 lg:left-2 top-1/2 -translate-y-1/2 pointer-events-none z-0">
         <motion.div
           animate={{ y: [-10, 10, -10] }}
@@ -92,7 +88,6 @@ export default function AboutSection() {
         </motion.div>
       </div>
 
-      {/* Small Decorative Ambient Background Graphic Right */}
       <div className="absolute -right-8 sm:-right-4 lg:right-2 top-1/2 -translate-y-1/2 pointer-events-none z-0">
         <motion.div
           animate={{ y: [10, -10, 10] }}
@@ -110,7 +105,7 @@ export default function AboutSection() {
       </div>
 
       <div className="container max-w-5xl mx-auto relative z-10">
-        {/* CYBERPUNK MECH HUD ENCLOSED FRAME */}
+
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -126,13 +121,12 @@ export default function AboutSection() {
             shadow-[0_0_40px_rgba(0,0,0,0.9)]
           "
         >
-          {/* Cyberpunk Mech HUD Corner Brackets in Pure White */}
+
           <CyberCorner position="top-left" color="#ffffff" />
           <CyberCorner position="top-right" color="#ffffff" />
           <CyberCorner position="bottom-left" color="#ffffff" />
           <CyberCorner position="bottom-right" color="#ffffff" />
 
-          {/* GTA STYLE HEADER & EXTENDING LINE ON THE SAME ROW */}
           <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12 relative z-10">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -162,7 +156,6 @@ export default function AboutSection() {
               </h2>
             </motion.div>
 
-            {/* PLAIN LINE EXTENDING ON THE SAME ROW */}
             <motion.div
               initial={{ opacity: 0, scaleX: 0 }}
               whileInView={{ opacity: 1, scaleX: 1 }}
@@ -173,7 +166,6 @@ export default function AboutSection() {
             />
           </div>
 
-          {/* PLAIN TEXT CONTENT - LEFT ALIGNED */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}

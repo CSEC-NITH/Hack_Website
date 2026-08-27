@@ -5,10 +5,8 @@ export default function HackBackground() {
         <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
             <div className="hack-atmosphere absolute inset-0" />
 
-            {/* DEEP VIOLET ATMOSPHERE */}
             <div className="hack-violet-haze absolute inset-0" />
 
-            {/* GRID LAYER 1 */}
             <div
                 className="hack-grid hack-grid-main absolute inset-[-70px]"
                 style={{
@@ -27,7 +25,6 @@ export default function HackBackground() {
                 }}
             />
 
-            {/* GRID LAYER 2 */}
             <div
                 className="hack-grid hack-grid-depth absolute inset-[-90px]"
                 style={{
@@ -46,22 +43,16 @@ export default function HackBackground() {
                 }}
             />
 
-            {/* CYAN ATMOSPHERE */}
             <div className="hack-glow hack-glow-cyan" />
 
-            {/* PINK ATMOSPHERE */}
             <div className="hack-glow hack-glow-pink" />
 
-            {/* VIOLET ATMOSPHERE */}
             <div className="hack-glow hack-glow-purple" />
 
-            {/* LIGHT HAZE */}
             <div className="hack-haze absolute inset-0" />
 
-            {/* SCANLINES */}
             <div className="hack-scanlines absolute inset-0" />
 
-            {/* SPARSE PARTICLES */}
             <div className="hack-particles absolute inset-0">
                 <span className="hack-particle p1" />
                 <span className="hack-particle p2" />
@@ -81,7 +72,6 @@ export default function HackBackground() {
                 <span className="hack-particle p16" />
             </div>
 
-            {/* GEOMETRIC ACCENTS */}
             <div className="hack-geometry hack-geometry-one" />
             <div className="hack-geometry hack-geometry-two" />
             <div className="hack-geometry hack-geometry-three" />
