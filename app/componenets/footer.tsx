@@ -14,6 +14,7 @@ import {
   Heart,
   ArrowUpRight,
   Sparkles,
+  MapPin,
 } from "lucide-react";
 import { FaDiscord } from "react-icons/fa";
 import { scrollToSection } from "@/lib/scroll-utils";
@@ -119,7 +120,20 @@ export default function Footer() {
 
   return (
     <footer className="relative w-full border-t border-white/15 bg-black text-white select-none overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+      {/* Small Decorative Side Graphic */}
+      <div className="absolute -bottom-8 -right-8 sm:right-4 sm:bottom-0 pointer-events-none z-0 w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 opacity-90 sm:opacity-85 transition-opacity">
+        <Image
+          src="/footer/CSEC (5).svg"
+          alt="CSEC Footer Graphic"
+          fill
+          className="object-contain object-bottom-right drop-shadow-[0_0_20px_rgba(255,42,133,0.3)]"
+          priority={false}
+        />
+        {/* Soft edge blend fade */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_50%,rgba(0,0,0,0.5)_95%)]" />
+      </div>
+
+      <div className="relative z-10 mx-10   px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         {/* 4 Column Main Grid */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8 pb-12">
           {/* Col 1: CSEC Brand & Description */}
@@ -206,7 +220,7 @@ export default function Footer() {
           </div>
 
           {/* Col 3: Resources */}
-          <div className="lg:col-span-3 sm:col-span-1 space-y-4">
+          <div className="lg:col-span-2 sm:col-span-1 space-y-4">
             <h4
               className={`flex items-center gap-2 text-xl font-pricedown tracking-wider text-white ${pricedown.className}`}
             >
@@ -239,71 +253,60 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Col 4: Stay Updated */}
-          <div className="lg:col-span-3 space-y-4">
-            <h4
-              className={`text-xl font-pricedown tracking-wider text-white ${pricedown.className}`}
-            >
-              STAY UPDATED
-            </h4>
+          {/* Col 4: NIT Hamirpur Map */}
+          <div className="lg:col-span-4 sm:col-span-2 space-y-3">
+            <div className="flex items-center justify-between">
+              <h4
+                className={`flex items-center gap-2 text-xl font-pricedown tracking-wider text-white ${pricedown.className}`}
+              >
+                <MapPin className="h-4 w-4 text-[#ff2a85] shrink-0" />
+                <span>VENUE LOCATION</span>
+              </h4>
+             
+                
+            
+            </div>
 
-            <p className="text-xs sm:text-sm leading-relaxed text-gray-400 font-sans">
-              Subscribe to the HACK 6.0 newsletter for updates, schedule releases, and announcements.
+            <p className="text-xs text-gray-400 font-sans">
+              National Institute of Technology, Hamirpur, HP — 177005
             </p>
 
-            <form onSubmit={handleSubscribe} className="space-y-2.5 pt-1">
-              <input
-                type="email"
-                required
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl bg-[#0c0517] border border-white/15 px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-all duration-200 focus:border-[#ff2a85] focus:shadow-[0_0_15px_rgba(255,42,133,0.3)] font-sans"
+            <a
+              href="https://maps.google.com/?q=National+Institute+of+Technology+Hamirpur,+Himachal+Pradesh+177005"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open NIT Hamirpur in Google Maps"
+              className="relative block w-full max-w-sm h-44 sm:h-48 rounded-2xl overflow-hidden border border-white/20 bg-[#0c0517] shadow-[0_0_15px_rgba(0,240,255,0.15)] group hover:border-[#00f0ff] hover:shadow-[0_0_25px_rgba(0,240,255,0.3)] transition-all cursor-pointer"
+            >
+              <iframe
+                title="NIT Hamirpur Location Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3393.993427958971!2d76.52220497585098!3d31.708307974728564!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3904d44081c7e997%3A0x7d6f51be7612f0a!2sNational%20Institute%20of%20Technology%2C%20Hamirpur!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{
+                  border: 0,
+                  filter: "invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)",
+                }}
+                allowFullScreen={false}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full object-cover pointer-events-none group-hover:scale-105 transition-transform duration-300"
               />
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="
-                  relative group overflow-hidden
-                  flex w-full cursor-pointer items-center justify-center gap-2
-                  rounded-xl
-                  bg-gradient-to-r from-[#ff2a85] via-[#ff007f] to-[#7928ca]
-                  py-3
-                  text-lg font-pricedown uppercase tracking-wider text-white
-                  border border-[#ff75c3]/60
-                  shadow-[0_0_15px_rgba(255,42,133,0.4),_2px_2px_0px_#00f0ff]
-                  hover:shadow-[0_0_25px_rgba(255,42,133,0.7),_3px_3px_0px_#00f0ff]
-                  hover:-translate-y-0.5
-                  active:translate-y-0.5
-                  transition-all duration-200
-                  disabled:opacity-60
-                  select-none
-                "
-              >
-                {/* Shimmer sweep */}
-                <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[350%] transition-transform duration-1000 ease-out pointer-events-none" />
-
-                {isSubmitting ? (
-                  <>
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    <span>SUBSCRIBING...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="h-4 w-4 text-[#00f0ff]" />
-                    <span>SUBSCRIBE</span>
-                  </>
-                )}
-              </button>
-            </form>
-
-            {isSubscribed && (
-              <div className="mt-2 flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-400">
-                <CheckCircle2 size={14} className="shrink-0 text-emerald-400" />
-                <span>THANK YOU! TRANSMISSION RECEIVED.</span>
+              {/* Premium Vice City Style Hover Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/30 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-1.5 backdrop-blur-[2px]">
+                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/90 border-2 border-[#00f0ff] shadow-[0_0_20px_rgba(0,240,255,0.5),_3px_3px_0px_#ff2a85] group-hover:scale-105 transition-transform duration-200">
+                  <MapPin className="w-4 h-4 text-[#ff2a85] fill-[#ff2a85]/40 animate-pulse shrink-0" />
+                  <span className={`text-sm sm:text-base font-pricedown tracking-wider text-white ${pricedown.className} [-webkit-text-stroke:0.5px_#000]`}>
+                    VIEW ON GOOGLE MAPS
+                  </span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-[#00f0ff] shrink-0" />
+                </div>
+                <span className="text-[10px] font-mono font-bold tracking-widest text-[#00f0ff] uppercase bg-black/80 px-2.5 py-0.5 rounded-md border border-white/15 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+                  NIT HAMIRPUR, HP
+                </span>
               </div>
-            )}
+            </a>
           </div>
         </div>
 

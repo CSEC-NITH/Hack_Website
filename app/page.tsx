@@ -20,8 +20,8 @@ export default function Home() {
         <AboutSection />
         <TimelineSection />
         <PrizeSection />
-        <JudgesSection />
         <SponsorsSection />
+        <JudgesSection />
         <FaqSection />
         <OrganizersSection />
         <TeamSection />

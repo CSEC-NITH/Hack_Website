@@ -3,393 +3,253 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
-    motion,
-    useMotionValue,
-    useSpring,
-    useTransform,
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
 } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import localFont from "next/font/local";
+import { pricedown } from "@/lib/fonts";
 
 const Hacked_KerX = localFont({
-    src: "../../public/fonts/Hacked-KerX.ttf",
-    variable: "--custom-font",
-    fallback: ["monospace", "sans-serif"],
+  src: "../../public/fonts/Hacked-KerX.ttf",
+  variable: "--custom-font",
+  fallback: ["monospace", "sans-serif"],
 });
 
 /* ============================================================================
-   TYPES
+   TYPES & DATA
    ============================================================================ */
 
 interface Sponsor {
-    name: string;
-    logo: string;
+  name: string;
+  logo: string;
 }
 
 interface SponsorTier {
-    tier: string;
-    sponsors: Sponsor[];
+  tier: string;
+  sponsors: Sponsor[];
 }
 
-/* ============================================================================
-   SPONSOR DATA
-   ============================================================================ */
-
 const sponsorTiers: SponsorTier[] = [
-    {
-        tier: "Gold Sponsor",
-        sponsors: [
-            {
-                name: "Devfolio",
-                logo:
-                    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Devfolio_Logo-White%402x-ZaNDeRtKGecstXyvSLZkQ3boQYnwqb.png",
-            },
-        ],
-    },
-    {
-        tier: "Silver Sponsors",
-        sponsors: [
-            {
-                name: "ETHIndia",
-                logo:
-                    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ethindia-light-YeS3YkDSlazR7JfV8TEd4DdgNJjS7O.png",
-            },
-            {
-                name: "GitHub",
-                logo:
-                    "https://res.cloudinary.com/dnbf0uwku/image/upload/v1741427703/GitHub_Logo_White_jxcin2.png",
-            },
-        ],
-    },
-    {
-        tier: "Bronze Sponsor",
-        sponsors: [
-            {
-                name: "InterviewBuddy",
-                logo:
-                    "https://res.cloudinary.com/dnbf0uwku/image/upload/v1741430548/colored-logo_1_hanfeh.png",
-            },
-        ],
-    },
-    {
-        tier: "In-Kind Sponsor",
-        sponsors: [
-            {
-                name: "Appwrite",
-                logo:
-                    "https://res.cloudinary.com/dmiq1mtz7/image/upload/f_auto,q_auto/v1/CSEC/sajmu7cc4h2olyrwb14b",
-            },
-            {
-                name: "Proto.io",
-                logo:
-                    "https://res.cloudinary.com/dnbf0uwku/image/upload/v1742214136/colored-logo_5_yerfhu.png",
-            },
-            {
-                name: "EaseMyTrip",
-                logo:
-                    "https://res.cloudinary.com/dnbf0uwku/image/upload/v1742214348/White_xa7tsz.png",
-            },
-        ],
-    },
+  {
+    tier: "Gold Sponsor",
+    sponsors: [
+      {
+        name: "Devfolio",
+        logo: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Devfolio_Logo-White%402x-ZaNDeRtKGecstXyvSLZkQ3boQYnwqb.png",
+      },
+    ],
+  },
+  {
+    tier: "Silver Sponsors",
+    sponsors: [
+      {
+        name: "ETHIndia",
+        logo: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ethindia-light-YeS3YkDSlazR7JfV8TEd4DdgNJjS7O.png",
+      },
+      {
+        name: "GitHub",
+        logo: "https://res.cloudinary.com/dnbf0uwku/image/upload/v1741427703/GitHub_Logo_White_jxcin2.png",
+      },
+    ],
+  },
+  {
+    tier: "Bronze Sponsor",
+    sponsors: [
+      {
+        name: "InterviewBuddy",
+        logo: "https://res.cloudinary.com/dnbf0uwku/image/upload/v1741430548/colored-logo_1_hanfeh.png",
+      },
+    ],
+  },
+  {
+    tier: "In-Kind Sponsor",
+    sponsors: [
+      {
+        name: "Appwrite",
+        logo: "https://res.cloudinary.com/dmiq1mtz7/image/upload/f_auto,q_auto/v1/CSEC/sajmu7cc4h2olyrwb14b",
+      },
+      {
+        name: "Proto.io",
+        logo: "https://res.cloudinary.com/dnbf0uwku/image/upload/v1742214136/colored-logo_5_yerfhu.png",
+      },
+      {
+        name: "EaseMyTrip",
+        logo: "https://res.cloudinary.com/dnbf0uwku/image/upload/v1742214348/White_xa7tsz.png",
+      },
+    ],
+  },
 ];
 
 /* ============================================================================
-   BEVELS
+   SCI-FI TILT CARD (Holographic Panel)
    ============================================================================ */
 
-const BEVEL_RAISED =
-    "inset -1px -1px 0 rgba(0,0,0,0.35), inset 1px 1px 0 rgba(255,255,255,0.8)";
-
-const BEVEL_INSET =
-    "inset 1px 1px 0 rgba(0,0,0,0.1), inset -1px -1px 0 rgba(255,255,255,0.9)";
-
-/* ============================================================================
-   WINDOW CONTROLS
-   ============================================================================ */
-
-function WindowControls() {
-    return (
-        <div className="flex items-center gap-1">
-            <div
-                style={{ boxShadow: BEVEL_RAISED }}
-                className="flex h-[17px] w-[17px] items-center justify-center bg-[#c9c9d4] text-[9px] font-bold text-[#222]"
-            >
-                _
-            </div>
-
-            <div
-                style={{ boxShadow: BEVEL_RAISED }}
-                className="flex h-[17px] w-[17px] items-center justify-center bg-[#c9c9d4] text-[8px] font-bold text-[#222]"
-            >
-                □
-            </div>
-
-            <div
-                style={{ boxShadow: BEVEL_RAISED }}
-                className="flex h-[17px] w-[17px] items-center justify-center bg-[#ff8ed8] text-[9px] font-bold text-black"
-            >
-                ×
-            </div>
-        </div>
-    );
-}
-
-/* ============================================================================
-   TILT CARD
-   ============================================================================ */
-
-function TiltCard({
-                      children,
-                      shadow,
-                  }: {
-    children: React.ReactNode;
-    shadow: string;
+function SciFiCard({
+  children,
+  accent,
+}: {
+  children: React.ReactNode;
+  accent: string;
 }) {
-    const x = useMotionValue(0);
-    const y = useMotionValue(0);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
-    const springX = useSpring(x, {
-        stiffness: 220,
-        damping: 25,
-        mass: 0.5,
-    });
+  const springX = useSpring(x, { stiffness: 200, damping: 25, mass: 0.5 });
+  const springY = useSpring(y, { stiffness: 200, damping: 25, mass: 0.5 });
 
-    const springY = useSpring(y, {
-        stiffness: 220,
-        damping: 25,
-        mass: 0.5,
-    });
+  const rotateX = useTransform(springY, [-0.5, 0.5], ["7deg", "-7deg"]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], ["-7deg", "7deg"]);
 
-    const rotateX = useTransform(
-        springY,
-        [-0.5, 0.5],
-        ["5deg", "-5deg"],
-    );
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mouseX = (e.clientX - rect.left) / rect.width - 0.5;
+    const mouseY = (e.clientY - rect.top) / rect.height - 0.5;
+    x.set(mouseX);
+    y.set(mouseY);
+  }
 
-    const rotateY = useTransform(
-        springX,
-        [-0.5, 0.5],
-        ["-5deg", "5deg"],
-    );
+  function handleMouseLeave() {
+    x.set(0);
+    y.set(0);
+  }
 
-    function handleMouseMove(
-        e: React.MouseEvent<HTMLDivElement>,
-    ) {
-        const rect = e.currentTarget.getBoundingClientRect();
+  return (
+    <div className="w-full perspective-[1200px] group">
+      <motion.div
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          rotateX,
+          rotateY,
+          transformPerspective: 1200,
+          transformStyle: "preserve-3d",
+        }}
+        className="relative w-full bg-[#030008]/50 backdrop-blur-xl border border-white/10 will-change-transform transition-colors duration-300 hover:bg-[#030008]/70"
+      >
+        {/* Targeting Crosshairs (Corners) */}
+        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 z-20 transition-colors duration-300 group-hover:w-6 group-hover:h-6" style={{ borderColor: accent, boxShadow: `-2px -2px 10px ${accent}40` }} />
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 z-20 transition-colors duration-300 group-hover:w-6 group-hover:h-6" style={{ borderColor: accent, boxShadow: `2px -2px 10px ${accent}40` }} />
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 z-20 transition-colors duration-300 group-hover:w-6 group-hover:h-6" style={{ borderColor: accent, boxShadow: `-2px 2px 10px ${accent}40` }} />
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 z-20 transition-colors duration-300 group-hover:w-6 group-hover:h-6" style={{ borderColor: accent, boxShadow: `2px 2px 10px ${accent}40` }} />
 
-        const mouseX =
-            (e.clientX - rect.left) / rect.width - 0.5;
+        {/* Ambient Core Glow */}
+        <div 
+          className="absolute inset-0 opacity-0 group-hover:opacity-15 transition-opacity duration-700 pointer-events-none z-0"
+          style={{ background: `radial-gradient(circle at 50% 50%, ${accent}, transparent 70%)` }}
+        />
 
-        const mouseY =
-            (e.clientY - rect.top) / rect.height - 0.5;
+        {/* Animated Scanning Laser on Hover */}
+        <motion.div
+          initial={{ top: "0%", opacity: 0 }}
+          whileHover={{ top: ["0%", "100%", "0%"], opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+          className="absolute left-0 right-0 h-[2px] z-30 pointer-events-none"
+          style={{ backgroundColor: accent, boxShadow: `0 0 15px ${accent}, 0 0 5px white` }}
+        />
 
-        x.set(mouseX);
-        y.set(mouseY);
-    }
-
-    function handleMouseLeave() {
-        x.set(0);
-        y.set(0);
-    }
-
-    return (
-        <div className="w-full perspective-[1000px]">
-            <motion.div
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-                style={{
-                    rotateX,
-                    rotateY,
-                    transformPerspective: 1000,
-                    transformStyle: "preserve-3d",
-                    boxShadow: `7px 7px 0 ${shadow}`,
-                }}
-                className="relative w-full overflow-hidden border-2 border-[#292929] bg-[#e8e8ed] will-change-transform"
-            >
-                {children}
-            </motion.div>
+        <div className="relative z-10">
+          {children}
         </div>
-    );
+      </motion.div>
+    </div>
+  );
 }
 
 /* ============================================================================
-   WINDOW TITLE BAR
-   ============================================================================ */
-
-function WindowTitleBar({
-                            title,
-                            accent,
-                        }: {
-    title: string;
-    accent: string;
-}) {
-    return (
-        <div
-            className="flex h-9 items-center justify-between border-b-2 border-[#292929] px-2.5"
-            style={{
-                background: `linear-gradient(
-          90deg,
-          ${accent} 0%,
-          ${accent} 28%,
-          #ffc5ee 65%,
-          #eeeeee 100%
-        )`,
-            }}
-        >
-            <div className="flex items-center gap-2">
-                <div
-                    style={{
-                        boxShadow: BEVEL_RAISED,
-                    }}
-                    className="flex h-5 w-5 items-center justify-center bg-[#eeeeee]"
-                >
-                    <div
-                        className="h-2.5 w-3.5"
-                        style={{
-                            backgroundColor: accent,
-                        }}
-                    />
-                </div>
-
-                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-[#222]">
-            {title}
-          </span>
-            </div>
-
-            <WindowControls />
-        </div>
-    );
-}
-
-/* ============================================================================
-   SPONSOR LOGO
-   ============================================================================ */
-
-function SponsorLogo({
-                         sponsor,
-                         large = false,
-                     }: {
-    sponsor: Sponsor;
-    large?: boolean;
-}) {
-    return (
-        <div
-            style={{
-                boxShadow: BEVEL_INSET,
-            }}
-            className={`relative flex items-center justify-center overflow-hidden border-2 border-[#292929] bg-[#121216] p-4 ${
-                large ? "h-36 md:h-44" : "h-28 md:h-32"
-            }`}
-        >
-            <div className="relative z-10 flex h-full w-full items-center justify-center">
-                <Image
-                    src={sponsor.logo || "/placeholder.svg"}
-                    alt={sponsor.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 400px"
-                    className="object-contain p-2"
-                />
-            </div>
-        </div>
-    );
-}
-
-/* ============================================================================
-   SPONSOR CARD
+   SPONSOR CARD CONTENT
    ============================================================================ */
 
 function SponsorCard({
-                         sponsor,
-                         index,
-                         tier,
-                         large = false,
-                     }: {
-    sponsor: Sponsor;
-    index: number;
-    tier: "gold" | "silver" | "bronze" | "inkind";
-    large?: boolean;
+  sponsor,
+  index,
+  tier,
+  large = false,
+}: {
+  sponsor: Sponsor;
+  index: number;
+  tier: "gold" | "silver" | "bronze" | "inkind";
+  large?: boolean;
 }) {
-    const accents = {
-        gold: "#ff1493",
-        silver: index % 2 === 0 ? "#00ffff" : "#ff1493",
-        bronze: "#8a2be2",
-        inkind: ["#8a2be2", "#ff1493", "#00ffff"],
-    };
+  const accents = {
+    gold: "#ff00aa",     // Hot Neon Pink
+    silver: "#00ffff",   // Cyan
+    bronze: "#a200ff",   // Vaporwave Violet
+    inkind: ["#a200ff", "#ff00aa", "#00ffff"],
+  };
 
-    const accent =
-        tier === "inkind"
-            ? accents.inkind[index % 3]
-            : accents[tier];
+  const accent = tier === "inkind" ? accents.inkind[index % 3] : accents[tier];
+  
+  return (
+    <SciFiCard accent={accent}>
 
-    const filename =
-        tier === "gold"
-            ? "GOLD_SPONSOR.EXE"
-            : tier === "silver"
-                ? `SILVER_${String(index + 1).padStart(2, "0")}.EXE`
-                : tier === "bronze"
-                    ? "BRONZE_SPONSOR.EXE"
-                    : `IN_KIND_${String(index + 1).padStart(2, "0")}.EXE`;
+      <div className={`relative flex items-center justify-center p-6 ${large ? "h-40 md:h-52" : "h-32 md:h-40"}`}>
+        {/* Subtle grid pattern behind the logo */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:15px_15px] pointer-events-none" />
+        
+        <div className="relative z-10 w-full h-full transition-transform duration-500 group-hover:scale-[1.08]">
+          <Image
+            src={sponsor.logo || "/placeholder.svg"}
+            alt={sponsor.name}
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className={`object-contain drop-shadow-[0_0_12px_rgba(255,255,255,0.2)]`}
+          />
+        </div>
+      </div>
 
-    return (
-        <TiltCard shadow={accent}>
-            <WindowTitleBar
-                title={filename}
-                accent={accent}
-            />
-
-            <div className="p-3 md:p-4">
-                <SponsorLogo
-                    sponsor={sponsor}
-                    large={large}
-                />
-
-                <div className="mt-3 flex items-center justify-center">
-            <span className="truncate font-mono text-[10px] font-bold uppercase tracking-wider text-[#292929]">
-              {sponsor.name}
-            </span>
-                </div>
-            </div>
-        </TiltCard>
-    );
+      {/* Sci-Fi Bottom Label Bar */}
+      <div className="px-4 py-3 border-t border-white/5 bg-gradient-to-t from-black/60 to-transparent flex justify-between items-center">
+        <span 
+          className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-white"
+          style={{ textShadow: `0 0 10px ${accent}80` }}
+        >
+          {sponsor.name}
+        </span>
+        <div className="flex gap-1">
+          <div className="w-4 h-[2px] bg-white/20" />
+          <div className="w-1 h-[2px]" style={{ backgroundColor: accent }} />
+          <div className="w-1 h-[2px]" style={{ backgroundColor: accent }} />
+        </div>
+      </div>
+    </SciFiCard>
+  );
 }
 
 /* ============================================================================
-   TIER LABEL
+   HUD TIER LABEL
    ============================================================================ */
 
 function TierLabel({
-                       children,
-                       accent,
-                   }: {
-    children: React.ReactNode;
-    accent: string;
+  children,
+  accent,
+  index,
+}: {
+  children: React.ReactNode;
+  accent: string;
+  index: number;
 }) {
-    return (
-        <div className="mb-5 flex items-center gap-3">
-            <div
-                className="h-[2px] flex-1"
-                style={{
-                    backgroundColor: accent,
-                }}
-            />
-
-            <div
-                style={{
-                    boxShadow: `3px 3px 0 ${accent}`,
-                }}
-                className="border-2 border-[#555] bg-[#eeeeee] px-3 py-1.5 font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[#444]"
-            >
-                {children}
-            </div>
-
-            <div
-                className="h-[2px] flex-1"
-                style={{
-                    backgroundColor: accent,
-                }}
-            />
-        </div>
-    );
+  return (
+    <div className="mb-8 flex items-center gap-4 relative">
+      <div className="h-[1px] flex-1 bg-white/10 relative overflow-hidden">
+        <motion.div 
+          initial={{ x: "-100%" }}
+          whileInView={{ x: "200%" }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 3 }}
+          className="absolute top-0 bottom-0 w-1/3" 
+          style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }} 
+        />
+      </div>
+      <div
+        className="font-mono text-sm font-bold uppercase tracking-[0.25em] bg-black/50 backdrop-blur-md px-4 py-1.5 border-l-2 border-r-2"
+        style={{ color: accent, borderColor: accent, textShadow: `0 0 10px ${accent}` }}
+      >
+        [ {children} ]
+      </div>
+    </div>
+  );
 }
 
 /* ============================================================================
@@ -397,222 +257,115 @@ function TierLabel({
    ============================================================================ */
 
 export default function SponsorsSection() {
-    const [ref, inView] = useInView({
-        triggerOnce: true,
-        threshold: 0.08,
-    });
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.08 });
 
-    const container = {
-        hidden: {
-            opacity: 0,
-        },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.15,
-                delayChildren: 0.1,
-            },
-        },
-    };
+  const container = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
+  };
 
-    const item = {
-        hidden: {
-            y: 25,
-            opacity: 0,
-        },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 0.65,
-                ease: "easeOut",
-            },
-        },
-    };
+  const item = {
+    hidden: { y: 40, opacity: 0, filter: "blur(10px)" },
+    visible: { y: 0, opacity: 1, filter: "blur(0px)", transition: { duration: 0.8, ease: "easeOut" } },
+  };
 
-    const gold = sponsorTiers[0];
-    const silver = sponsorTiers[1];
-    const bronze = sponsorTiers[2];
-    const inKind = sponsorTiers[3];
+  const gold = sponsorTiers[0];
+  const silver = sponsorTiers[1];
+  const bronze = sponsorTiers[2];
+  const inKind = sponsorTiers[3];
 
-    return (
-        <section
-            id="sponsors"
-            className="relative overflow-hidden py-16 md:py-20"
-        >
-            <motion.div
-                ref={ref}
-                className="relative mx-auto w-full max-w-5xl px-4 md:px-6"
-                variants={container}
-                initial="hidden"
-                animate={inView ? "visible" : "hidden"}
+  return (
+    <section id="sponsors" className="relative overflow-hidden py-24 md:py-32">
+      
+      {/* Assuming the vibrant background image is behind this container, 
+          this subtle vignette helps text pop without blocking the art */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#05010a_100%)] pointer-events-none z-0" />
+
+      <motion.div
+        ref={ref}
+        className="relative z-10 mx-auto w-full max-w-5xl px-4 md:px-6"
+        variants={container}
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+      >
+        {/* GTA STYLE HEADER & EXTENDING LINE */}
+        <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-16 sm:mb-20">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6 }}
+            className="shrink-0"
+          >
+            <h2
+              className={`
+                text-4xl
+                sm:text-6xl
+                md:text-7xl
+                lg:text-8xl
+                font-pricedown
+                tracking-tight
+                text-white
+                ${pricedown.className}
+                [-webkit-text-stroke:2px_#000000]
+                sm:[-webkit-text-stroke:3px_#000000]
+                drop-shadow-[4px_4px_0px_rgba(0,0,0,0.9)]
+                select-none
+                whitespace-nowrap
+              `}
             >
-                {/* HEADER */}
-                <motion.div
-                    variants={item}
-                    className="relative mb-12 text-center"
-                >
-                    <div
-                        style={{
-                            boxShadow: "3px 3px 0 #00ffff",
-                        }}
-                        className="mb-4 inline-block border-2 border-[#555] bg-[#eeeeee] px-3 py-1.5 font-mono text-[8px] font-bold uppercase tracking-[0.2em] text-[#444]"
-                    >
-                        SPONSOR DIRECTORY
-                    </div>
+              EVENT <span className="text-[#00f0ff]">SPONSORS</span>
+            </h2>
+          </motion.div>
 
-                    <h2
-                        className={`text-4xl text-white drop-shadow-[3px_3px_0_#8a2be2] md:text-6xl ${Hacked_KerX.className}`}
-                    >
-                        Our <span className="text-[#ff1493]">Sponsors</span>
-                    </h2>
+          {/* PLAIN LINE EXTENDING ON THE SAME ROW */}
+          <motion.div
+            initial={{ opacity: 0, scaleX: 0 }}
+            whileInView={{ opacity: 1, scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            style={{ transformOrigin: "left" }}
+            className="flex-1 h-[2px] bg-white"
+          />
+        </div>
 
-                    <div className="mx-auto mt-5 h-[3px] w-24 bg-gradient-to-r from-[#00ffff] via-[#8a2be2] to-[#ff1493]" />
+        {/* GOLD TIER */}
+        <motion.div variants={item} className="mb-16">
+          <TierLabel index={0} accent="#ff00aa">{gold.tier}</TierLabel>
+          <div className="mx-auto max-w-3xl">
+            <SponsorCard sponsor={gold.sponsors[0]} index={0} tier="gold" large />
+          </div>
+        </motion.div>
 
-                    <p className="mx-auto mt-5 max-w-xl font-mono text-[10px] leading-relaxed text-white/75 md:text-xs">
-                        HACK 6.0 is made possible by the generous support of our sponsors.
-                    </p>
-                </motion.div>
+        {/* SILVER TIER */}
+        <motion.div variants={item} className="mb-16">
+          <TierLabel index={1} accent="#00ffff">{silver.tier}</TierLabel>
+          <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
+            {silver.sponsors.map((sponsor, index) => (
+              <SponsorCard key={sponsor.name} sponsor={sponsor} index={index} tier="silver" />
+            ))}
+          </div>
+        </motion.div>
 
-                {/* GOLD */}
-                <motion.div
-                    variants={item}
-                    className="mb-12"
-                >
-                    <TierLabel accent="#ff1493">
-                        {gold.tier}
-                    </TierLabel>
+        {/* BRONZE & IN-KIND TIER */}
+        <motion.div variants={item} className="mx-auto grid max-w-4xl gap-12 lg:grid-cols-[1fr_1.5fr]">
+          <div>
+            <TierLabel index={2} accent="#a200ff">{bronze.tier}</TierLabel>
+            <SponsorCard sponsor={bronze.sponsors[0]} index={0} tier="bronze" />
+          </div>
 
-                    <div className="mx-auto max-w-3xl">
-                        <SponsorCard
-                            sponsor={gold.sponsors[0]}
-                            index={0}
-                            tier="gold"
-                            large
-                        />
-                    </div>
-                </motion.div>
+          <div>
+            <TierLabel index={3} accent="#ff00aa">{inKind.tier}</TierLabel>
+            <div className="grid gap-6 sm:grid-cols-3">
+              {inKind.sponsors.map((sponsor, index) => (
+                <SponsorCard key={sponsor.name} sponsor={sponsor} index={index} tier="inkind" />
+              ))}
+            </div>
+          </div>
+        </motion.div>
 
-                {/* SILVER */}
-                <motion.div
-                    variants={item}
-                    className="mb-12"
-                >
-                    <TierLabel accent="#00ffff">
-                        {silver.tier}
-                    </TierLabel>
 
-                    <div className="mx-auto grid max-w-4xl gap-7 md:grid-cols-2">
-                        {silver.sponsors.map((sponsor, index) => (
-                            <SponsorCard
-                                key={sponsor.name}
-                                sponsor={sponsor}
-                                index={index}
-                                tier="silver"
-                            />
-                        ))}
-                    </div>
-                </motion.div>
-
-                {/* BRONZE + IN-KIND */}
-                <motion.div
-                    variants={item}
-                    className="mx-auto grid max-w-4xl gap-8 lg:grid-cols-[0.85fr_1.5fr]"
-                >
-                    <div>
-                        <TierLabel accent="#8a2be2">
-                            {bronze.tier}
-                        </TierLabel>
-
-                        <SponsorCard
-                            sponsor={bronze.sponsors[0]}
-                            index={0}
-                            tier="bronze"
-                        />
-                    </div>
-
-                    <div>
-                        <TierLabel accent="#ff1493">
-                            {inKind.tier}
-                        </TierLabel>
-
-                        <div className="grid gap-5 sm:grid-cols-3">
-                            {inKind.sponsors.map((sponsor, index) => (
-                                <SponsorCard
-                                    key={sponsor.name}
-                                    sponsor={sponsor}
-                                    index={index}
-                                    tier="inkind"
-                                />
-                            ))}
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* CTA */}
-                <motion.div
-                    variants={item}
-                    className="mx-auto mt-16 max-w-2xl"
-                >
-                    <TiltCard shadow="#ff1493">
-                        <WindowTitleBar
-                            title="BECOME_A_SPONSOR.EXE"
-                            accent="#00ffff"
-                        />
-
-                        <div className="bg-[#eeeeee] px-5 py-7 text-center md:px-8">
-                            <div
-                                style={{
-                                    boxShadow: "3px 3px 0 #8a2be2",
-                                }}
-                                className="mx-auto mb-5 flex h-12 w-12 items-center justify-center border-2 border-[#333] bg-[#ff9edc]"
-                            >
-                                <div className="h-6 w-6 border-2 border-[#8a2be2] bg-[#00ffff]" />
-                            </div>
-
-                            <h3 className="mb-2 font-mono text-lg font-bold uppercase text-[#222] md:text-xl">
-                                Interested in Sponsoring?
-                            </h3>
-
-                            <p className="mx-auto mb-6 max-w-lg font-mono text-[10px] leading-relaxed text-[#555] md:text-xs">
-                                Join our growing list of sponsors and connect with top talent and innovative projects.
-                            </p>
-
-                            <Button
-                                className="border-2 border-[#333] bg-[#ff4fd8] px-6 font-mono text-[10px] font-bold uppercase text-[#211522] shadow-[4px_4px_0_#8a2be2] transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:bg-[#00ffff] hover:shadow-[6px_6px_0_#ff1493]"
-                                onClick={() => {
-                                    const contactSection =
-                                        document.getElementById("contact");
-
-                                    if (contactSection) {
-                                        contactSection.scrollIntoView({
-                                            behavior: "smooth",
-                                        });
-                                    }
-                                }}
-                            >
-                                Become a Sponsor
-                            </Button>
-                        </div>
-                    </TiltCard>
-                </motion.div>
-
-                {/* BOTTOM TRANSITION */}
-                <div className="relative mt-20 h-16">
-                    <div className="absolute left-0 right-0 top-1/2 h-[2px] bg-[#8a2be2]" />
-                    <div className="absolute left-0 right-0 top-[calc(50%-6px)] h-[2px] bg-[#00ffff]/70" />
-                    <div className="absolute left-0 right-0 top-[calc(50%+6px)] h-[2px] bg-[#ff1493]/70" />
-
-                    <div
-                        style={{
-                            boxShadow: "4px 4px 0 #8a2be2",
-                        }}
-                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-[#333] bg-[#eeeeee] px-4 py-2 font-mono text-[8px] font-bold uppercase tracking-[0.15em] text-[#333]"
-                    >
-                        SPONSOR_DIRECTORY://END
-                    </div>
-                </div>
-            </motion.div>
-        </section>
-    );
+      </motion.div>
+    </section>
+  );
 }
